@@ -156,7 +156,6 @@ export function Navbar() {
         className="fixed inset-0 z-40 hidden flex-col justify-between bg-bg px-6 pb-8 pt-28 lg:hidden"
         style={{ clipPath: "circle(0% at 92% 4%)" }}
       >
-        <div className="grid-plus pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative flex flex-col">
           {[{ href: "/", label: "Home" }, ...nav].map((n, i) => (
             <TLink

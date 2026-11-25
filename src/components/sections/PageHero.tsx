@@ -16,8 +16,6 @@ export function PageHero({
   return (
     <section className="relative isolate overflow-hidden pb-14 pt-36 sm:pt-44">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div className="grid-lines absolute inset-0" />
-        <div className="grid-plus absolute inset-0" />
         <div className="blob-glow left-1/2 top-[-18%] h-[28rem] w-[56rem] -translate-x-1/2" style={{ background: "radial-gradient(closest-side, rgba(255,36,24,.26), transparent)" }} />
         <div className="absolute -right-10 top-24 text-red/35">
           <HexOutline size={190} />

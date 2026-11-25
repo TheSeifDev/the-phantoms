@@ -149,13 +149,11 @@ export function Hero() {
     <section ref={root} data-section="Intro" id="top" className="relative isolate overflow-hidden">
       {/* backdrop */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div className="grid-lines absolute inset-0" />
-        <div className="grid-plus absolute inset-0" />
         <div data-glow className="blob-glow left-1/2 top-[-12%] h-[34rem] w-[60rem] -translate-x-1/2 opacity-0" style={{ background: "radial-gradient(closest-side, rgba(255,36,24,.34), transparent)" }} />
         <div data-glow className="blob-glow -right-[8%] top-[28%] h-[28rem] w-[28rem] opacity-0" style={{ background: "radial-gradient(closest-side, rgba(255,150,40,.22), transparent)" }} />
         <div data-glow className="blob-glow -left-[10%] top-[40%] h-[30rem] w-[30rem] opacity-0" style={{ background: "radial-gradient(closest-side, rgba(255,36,24,.16), transparent)" }} />
         <HeroScene />
-        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_42%,var(--bg),transparent_78%)] opacity-90" />
+        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_42%,var(--bg),transparent_75%)] opacity-90" />
       </div>
 
       {/* floating cards (desktop) */}
@@ -205,7 +203,7 @@ export function Hero() {
             <GitBranch size={14} className="text-red" />
           </div>
           <div className="font-display mt-2 text-4xl font-extrabold leading-none tracking-[-0.06em]">
-            25<span className="text-red">+</span> <span className="text-base font-bold text-muted">members</span>
+            35<span className="text-red">+</span> <span className="text-base font-bold text-muted">members</span>
           </div>
           <div className="mt-3 flex items-end gap-[3px]">
             {[30, 52, 38, 64, 48, 76, 58, 90, 70, 100].map((h, i) => (
@@ -272,7 +270,7 @@ export function Hero() {
           <span className="block">We turn ideas into</span>
           <span className="block text-fg/35">websites, apps &amp; SaaS</span>
           <span className="block">
-            people <span className="serif-i pr-[0.08em] text-red">love to use.</span>
+            people <span className="serif-i glow-red pr-[0.08em]">love to use.</span>
           </span>
         </h1>
 
@@ -280,7 +278,7 @@ export function Hero() {
           عندك فكرة؟ إحنا نبنيها.
         </p>
         <p data-in className="mt-3 max-w-md text-[0.95rem] leading-relaxed text-muted opacity-0">
-          Phantoms is a 25-member product team from Alexandria — design, engineering and AI under one roof.
+          Phantoms is a 35-member product team from Alexandria — design, engineering and AI under one roof.
         </p>
 
         <div data-in className="mt-9 flex flex-wrap items-center justify-center gap-3 opacity-0">

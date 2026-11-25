@@ -38,11 +38,11 @@ export function PageTransition({ children }: { children: ReactNode }) {
     const el = panel.current;
     if (!el) return;
     gsap.to(el, {
-      yPercent: -100,
+      yPercent: 100,
       duration: 0.9,
       ease: "expo.inOut",
       onComplete: () => {
-        gsap.set(el, { yPercent: 100 });
+        gsap.set(el, { yPercent: -100 });
         pending.current = false;
         busy.current = false;
       },
@@ -75,7 +75,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
       pending.current = true;
       const l = labelFor(target);
       if (word.current) word.current.textContent = l.label;
-      gsap.set(panel.current, { yPercent: 100 });
+      gsap.set(panel.current, { yPercent: -100 });
       gsap.to(panel.current, {
         yPercent: 0,
         duration: 0.8,
@@ -84,7 +84,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
       });
       gsap.fromTo(
         [kanji.current, word.current],
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: -30 },
         { opacity: 1, y: 0, duration: 0.6, delay: 0.35, stagger: 0.08, ease: "expo.out" },
       );
       // never get stuck on the wipe
@@ -100,7 +100,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
         ref={panel}
         aria-hidden
         className="pointer-events-none fixed inset-0 z-[90] grid place-items-center overflow-hidden bg-red text-white"
-        style={{ transform: "translateY(100%)", borderRadius: "50% 50% 0 0 / 8% 8% 0 0" }}
+        style={{ transform: "translateY(-100%)", borderRadius: "0 0 50% 50% / 0 0 8% 8%" }}
       >
         <div className="text-center">
           <div ref={kanji} className="mx-auto mb-5 h-14 w-14">

@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { PageHero } from "@/components/sections/PageHero";
 import { ContactForm } from "@/components/sections/ContactForm";
-import { Fade } from "@/components/ui";
-import { site } from "@/data/site";
+import { ContactInfo } from "@/components/sections/ContactInfo";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -11,52 +8,21 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
-  const items = [
-    { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}` },
-    { icon: MessageCircle, label: "WhatsApp", value: site.phone, href: site.whatsapp },
-    { icon: Phone, label: "Call", value: site.phone, href: `tel:${site.phone.replace(/\s/g, "")}` },
-    { icon: MapPin, label: "Studio", value: site.location, href: undefined },
-  ];
   return (
-    <>
-      <PageHero label="Contact" title={<>Let&apos;s build <span className="serif-i text-red">it</span></>} ar="عندك فكرة؟ خلينا نبنيها." />
-      <section className="pb-24 sm:pb-32">
-        <div className="wrap grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
-          <Fade>
-            <ContactForm />
-          </Fade>
-          <Fade delay={0.1}>
-            <aside className="space-y-3">
-              {items.map((it) => {
-                const inner = (
-                  <>
-                    <span className="grid h-11 w-11 place-items-center rounded-full bg-red/15 text-red">
-                      <it.icon size={18} />
-                    </span>
-                    <span>
-                      <span className="label block">{it.label}</span>
-                      <span className="mt-1 block break-all text-sm font-semibold">{it.value}</span>
-                    </span>
-                  </>
-                );
-                const cls = "flex items-center gap-4 rounded-[1.4rem] border border-line bg-surface p-5 transition-colors";
-                return it.href ? (
-                  <a key={it.label} href={it.href} target={it.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" className={`${cls} hover:border-red`}>
-                    {inner}
-                  </a>
-                ) : (
-                  <div key={it.label} className={cls}>{inner}</div>
-                );
-              })}
-              <div className="rounded-[1.4rem] border border-line bg-surface p-5">
-                <span className="label">Response time</span>
-                <p className="font-display mt-3 text-3xl font-extrabold tracking-[-0.04em]">&lt; 24h</p>
-                <p className="ar mt-1 text-sm text-muted">بنرد في نفس اليوم غالبًا.</p>
-              </div>
-            </aside>
-          </Fade>
+    <main className="grain-s relative isolate overflow-hidden pb-20 pt-32 sm:pt-40">
+      <div aria-hidden className="aura -left-56 top-20 h-[34rem] w-[34rem] opacity-20" />
+      <div aria-hidden className="aura -right-64 top-[38%] h-[30rem] w-[30rem] opacity-15" />
+      <div className="wrap relative">
+        <div className="mb-12 max-w-3xl sm:mb-16">
+          <p className="label">Let&apos;s make something useful</p>
+          <h1 className="font-display tight mt-7 max-w-[9ch] text-[clamp(4rem,11vw,10rem)] font-extrabold">Let&apos;s <span className="serif-i text-red glow-red">talk.</span></h1>
+          <p className="ar mt-6 text-[clamp(1.25rem,2.5vw,2.1rem)] font-semibold">عندك فكرة؟ خلينا نبنيها.</p>
         </div>
-      </section>
-    </>
+        <div className="grid items-start gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
+          <div className="lg:sticky lg:top-28"><ContactInfo /></div>
+          <ContactForm />
+        </div>
+      </div>
+    </main>
   );
 }

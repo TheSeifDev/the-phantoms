@@ -96,7 +96,6 @@ export function Preloader() {
           <div key={i} data-slice className="h-full flex-1 border-r border-white/[0.04] bg-[#08080a]" />
         ))}
       </div>
-      <div className="grid-plus absolute inset-0 opacity-60" />
       <div ref={stage} className="absolute inset-0">
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[58%]">
           <div className="relative h-[min(52vw,16rem)] w-[min(52vw,16rem)]">

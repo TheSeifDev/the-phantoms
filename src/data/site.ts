@@ -22,7 +22,7 @@ export const nav = [
 ];
 
 export const stats = [
-  { value: 25, suffix: "", label: "Members", note: "Engineers, designers and researchers working in focused squads." },
+  { value: 35, suffix: "", label: "Members", note: "Engineers, designers and researchers working in focused squads." },
   { value: 12, suffix: "+", label: "Projects", note: "From landing pages to AI companions and ops platforms." },
   { value: 2, suffix: "", label: "Flagships", note: "RAFIQ and OMNI — our graduation-grade products." },
   { value: 1, suffix: "+", label: "Years", note: "Shipping together since 2025, out of Alexandria." },
@@ -50,6 +50,7 @@ export const marqueeTech = [
 export const processSteps = [
   {
     n: "01",
+    image: "/process/discover.jpg",
     title: "Discover",
     ar: "نفهم الفكرة",
     line: "We sit with the problem, the people and the constraints before touching code.",
@@ -57,6 +58,7 @@ export const processSteps = [
   },
   {
     n: "02",
+    image: "/process/design.jpg",
     title: "Design",
     ar: "نرسم الشكل",
     line: "Architecture and interface shaped together — data model, API, motion and brand.",
@@ -64,6 +66,7 @@ export const processSteps = [
   },
   {
     n: "03",
+    image: "/process/build.jpg",
     title: "Build",
     ar: "نبني بإتقان",
     line: "Small, reviewed, typed increments. You see real progress every week, not slides.",
@@ -71,6 +74,7 @@ export const processSteps = [
   },
   {
     n: "04",
+    image: "/process/ship.jpg",
     title: "Ship",
     ar: "نسلّم ونكمل",
     line: "Deploy, measure, iterate. We stay close after launch so it keeps working.",

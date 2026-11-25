@@ -125,7 +125,6 @@ export function Flagship() {
             data-cursor="OMNI"
             className="group relative flex min-h-[28rem] flex-1 overflow-hidden rounded-[2.4rem] bg-[#07070a] text-white ring-1 ring-white/10 transition-[flex] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] lg:min-h-0 lg:hover:flex-[1.55]"
           >
-            <div aria-hidden className="grid-lines absolute inset-0 opacity-70 [--grid:rgba(255,255,255,.07)]" />
             <div aria-hidden className="blob-glow right-0 top-0 h-80 w-80" style={{ background: "radial-gradient(closest-side, rgba(255,36,24,.28), transparent)" }} />
             <SwarmScene progress={prog} className="!inset-y-0 !left-[8%] !right-0" />
 

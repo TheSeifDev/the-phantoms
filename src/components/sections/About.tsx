@@ -58,7 +58,7 @@ export function About({ compact = false }: { compact?: boolean }) {
               <span className="mono text-[0.7rem] uppercase tracking-[0.16em] opacity-80">The team</span>
               <div>
                 <div className="font-display text-[clamp(6rem,15vw,12rem)] font-extrabold leading-[0.8] tracking-[-0.08em]">
-                  <Counter to={25} />
+                  <Counter to={35} />
                 </div>
                 <div className="mt-4 flex items-end justify-between gap-4">
                   <p className="max-w-[16rem] text-[0.95rem] font-medium leading-snug opacity-90">

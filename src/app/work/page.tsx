@@ -11,13 +11,12 @@ export const metadata: Metadata = {
 export default function WorkPage() {
   return (
     <>
-      <PageHero label="Work" title={<>Selected <span className="serif-i text-red">work</span></>} ar="شغلنا بيتكلم.">
-        Products we designed, engineered and launched. Filter by what you&apos;re planning to build.
+      <PageHero label="The archive" title={<>Selected <span className="serif-i text-red">work</span>.</>} ar="شغلنا بيتكلم.">
+        Products we designed, engineered and launched. A small index of useful things made with care in Alexandria.
       </PageHero>
-      <section className="pb-10">
-        <div className="wrap">
-          <WorkGrid />
-        </div>
+      <section className="relative overflow-hidden pb-16 sm:pb-24">
+        <div className="aura -left-48 top-20 h-96 w-96 opacity-20" />
+        <div className="wrap relative"><WorkGrid /></div>
       </section>
       <CTA />
     </>
