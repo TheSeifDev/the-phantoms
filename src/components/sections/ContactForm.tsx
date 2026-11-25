@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Check, Loader2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui";
 import { site } from "@/data/site";
@@ -13,6 +13,12 @@ export function ContactForm() {
   const [budget, setBudget] = useState<string>(budgets[4]);
   const [state, setState] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [err, setErr] = useState("");
+  const [pre, setPre] = useState("");
+  useEffect(() => {
+    try {
+      setPre(sessionStorage.getItem("ph-email") ?? "");
+    } catch {}
+  }, []);
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -68,7 +74,7 @@ export function ContactForm() {
         </label>
         <label className="block">
           <span className="label">Email</span>
-          <input name="email" type="email" required autoComplete="email" placeholder="you@company.com" className={field} />
+          <input key={pre} name="email" type="email" required autoComplete="email" defaultValue={pre} placeholder="you@company.com" className={field} />
         </label>
       </div>
 

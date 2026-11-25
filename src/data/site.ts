@@ -14,10 +14,11 @@ export const site = {
 };
 
 export const nav = [
-  { href: "/work", label: "Work", jp: "作品" },
-  { href: "/services", label: "Services", jp: "技" },
-  { href: "/team", label: "Team", jp: "仲間" },
-  { href: "/contact", label: "Contact", jp: "連絡" },
+  { href: "/work", label: "Work" },
+  { href: "/services", label: "Services" },
+  { href: "/team", label: "Team" },
+  { href: "/memories", label: "Memories" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export const stats = [
@@ -49,7 +50,6 @@ export const marqueeTech = [
 export const processSteps = [
   {
     n: "01",
-    kanji: "探",
     title: "Discover",
     ar: "نفهم الفكرة",
     line: "We sit with the problem, the people and the constraints before touching code.",
@@ -57,7 +57,6 @@ export const processSteps = [
   },
   {
     n: "02",
-    kanji: "設",
     title: "Design",
     ar: "نرسم الشكل",
     line: "Architecture and interface shaped together — data model, API, motion and brand.",
@@ -65,7 +64,6 @@ export const processSteps = [
   },
   {
     n: "03",
-    kanji: "築",
     title: "Build",
     ar: "نبني بإتقان",
     line: "Small, reviewed, typed increments. You see real progress every week, not slides.",
@@ -73,7 +71,6 @@ export const processSteps = [
   },
   {
     n: "04",
-    kanji: "届",
     title: "Ship",
     ar: "نسلّم ونكمل",
     line: "Deploy, measure, iterate. We stay close after launch so it keeps working.",

@@ -1,34 +1,34 @@
 import type { ReactNode } from "react";
 import { Fade, Label, Reveal } from "@/components/ui";
+import { HexOutline } from "@/components/ui/Hex";
 
 export function PageHero({
   label,
   title,
   ar,
   children,
-  kanji,
 }: {
   label: string;
   title: ReactNode;
   ar?: string;
   children?: ReactNode;
-  kanji?: string;
 }) {
   return (
-    <section className="relative overflow-hidden pb-14 pt-36 sm:pt-44">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-40 -top-40 h-[40rem] w-[40rem] rounded-full opacity-50 blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(255,36,24,.35), transparent 65%)" }}
-      />
-      {kanji && (
-        <span className="jp pointer-events-none absolute -right-[2%] top-[8%] select-none text-[min(48vw,30rem)] leading-none text-fg/[0.04]">
-          {kanji}
-        </span>
-      )}
+    <section className="relative isolate overflow-hidden pb-14 pt-36 sm:pt-44">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div className="grid-lines absolute inset-0" />
+        <div className="grid-plus absolute inset-0" />
+        <div className="blob-glow left-1/2 top-[-18%] h-[28rem] w-[56rem] -translate-x-1/2" style={{ background: "radial-gradient(closest-side, rgba(255,36,24,.26), transparent)" }} />
+        <div className="absolute -right-10 top-24 text-red/35">
+          <HexOutline size={190} />
+        </div>
+        <div className="absolute right-[18%] top-52 hidden text-fg/10 md:block">
+          <HexOutline size={70} />
+        </div>
+      </div>
       <div className="wrap relative">
         <Label>{label}</Label>
-        <Reveal immediate as="h1" className="font-display tight mt-7 max-w-[16ch] text-[clamp(3rem,9.5vw,9rem)] font-extrabold">
+        <Reveal immediate as="h1" className="font-display tight mt-7 max-w-[16ch] text-[clamp(3rem,9vw,8.4rem)] font-extrabold">
           {title}
         </Reveal>
         {ar && (

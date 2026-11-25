@@ -1,152 +1,187 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { ArrowUpRight, Command, Menu, X } from "lucide-react";
+import { gsap, prefersReducedMotion } from "@/lib/gsap";
+import { useReady } from "@/lib/ready";
 import { TLink } from "@/components/layout/PageTransition";
 import { Logo, ThemeToggle } from "@/components/ui/Brand";
-import { Button } from "@/components/ui";
+import { CommandMenu, openCommand } from "@/components/layout/CommandMenu";
 import { nav, site } from "@/data/site";
-import { gsap } from "@/lib/gsap";
-import { useLenis } from "@/lib/lenis";
 
 export function Navbar() {
   const pathname = usePathname();
+  const ready = useReady();
   const [open, setOpen] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const bar = useRef<HTMLElement>(null);
   const menu = useRef<HTMLDivElement>(null);
-  const lenis = useLenis();
+  const ind = useRef<HTMLSpanElement>(null);
+  const list = useRef<HTMLDivElement>(null);
+
+  // entrance once the loader is done
+  useEffect(() => {
+    if (!bar.current) return;
+    if (!ready || prefersReducedMotion()) {
+      if (ready) gsap.set(bar.current, { opacity: 1 });
+      return;
+    }
+    gsap.fromTo(bar.current, { yPercent: -160, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.1, ease: "expo.out", delay: 0.2 });
+  }, [ready]);
 
   useEffect(() => {
-    let last = window.scrollY;
-    const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 40);
-      setHidden(y > last && y > 240);
-      last = y;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const on = () => setScrolled(window.scrollY > 40);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
   }, []);
 
+  // sliding active indicator
   useEffect(() => {
-    setOpen(false);
+    const wrap = list.current;
+    const el = ind.current;
+    if (!wrap || !el) return;
+    const place = (target?: HTMLElement | null, instant = false) => {
+      if (!target) {
+        gsap.to(el, { opacity: 0, duration: 0.3 });
+        return;
+      }
+      const w = wrap.getBoundingClientRect();
+      const r = target.getBoundingClientRect();
+      gsap.to(el, { x: r.left - w.left, width: r.width, opacity: 1, duration: instant ? 0 : 0.5, ease: "expo.out" });
+    };
+    const active = () => wrap.querySelector<HTMLElement>(`[data-href="/${pathname.split("/")[1]}"]`);
+    place(active(), true);
+    const links = wrap.querySelectorAll<HTMLElement>("[data-href]");
+    const enter = (e: Event) => place(e.currentTarget as HTMLElement);
+    const out = () => place(active());
+    links.forEach((l) => l.addEventListener("pointerenter", enter));
+    wrap.addEventListener("pointerleave", out);
+    return () => {
+      links.forEach((l) => l.removeEventListener("pointerenter", enter));
+      wrap.removeEventListener("pointerleave", out);
+    };
   }, [pathname]);
 
-  useEffect(() => {
-    const el = menu.current;
-    if (!el) return;
-    if (open) {
-      lenis.get()?.stop();
-      document.body.style.overflow = "hidden";
-      gsap.to(el, { clipPath: "circle(150% at 92% 4%)", duration: 0.9, ease: "expo.inOut" });
-      gsap.fromTo(
-        el.querySelectorAll("[data-m]"),
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, stagger: 0.07, delay: 0.35, ease: "expo.out" },
-      );
-    } else {
-      lenis.get()?.start();
-      document.body.style.overflow = "";
-      gsap.to(el, { clipPath: "circle(0% at 92% 4%)", duration: 0.6, ease: "expo.inOut" });
-    }
-  }, [open, lenis]);
+  // close mobile menu on route change
+  useEffect(() => setOpen(false), [pathname]);
 
-  const active = (href: string) => pathname === href || pathname.startsWith(href + "/");
+  // mobile menu animation
+  const first = useRef(true);
+  useEffect(() => {
+    const m = menu.current;
+    if (!m) return;
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    document.documentElement.style.overflow = open ? "hidden" : "";
+    if (open) {
+      gsap.set(m, { display: "flex" });
+      gsap.fromTo(m, { clipPath: "circle(0% at 92% 4%)" }, { clipPath: "circle(150% at 92% 4%)", duration: 0.9, ease: "expo.inOut" });
+      gsap.fromTo(m.querySelectorAll("[data-m]"), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, stagger: 0.06, delay: 0.3, ease: "expo.out" });
+    } else {
+      gsap.to(m, { clipPath: "circle(0% at 92% 4%)", duration: 0.6, ease: "expo.inOut", onComplete: () => void gsap.set(m, { display: "none" }) });
+    }
+  }, [open]);
 
   return (
     <>
-      <header
-        className={`fixed inset-x-0 top-0 z-50 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          hidden && !open ? "-translate-y-[130%]" : "translate-y-0"
-        }`}
-      >
-        <div className="wrap pt-3 sm:pt-4">
-          <div
-            className={`flex items-center justify-between rounded-full border px-3 py-2 pl-4 transition-all duration-500 ${
-              scrolled
-                ? "border-line bg-bg/70 backdrop-blur-xl"
-                : "border-transparent bg-transparent"
-            }`}
-          >
-            <TLink href="/" className="flex items-center gap-3" data-cursor="HOME">
-              <Logo size={38} />
-              <span className="font-display text-lg font-extrabold tracking-[-0.04em] text-white mix-blend-difference">
-                PHANTOMS
-              </span>
-              <span className="jp hidden text-xs text-muted sm:inline">幻影</span>
-            </TLink>
+      <header ref={bar} className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:pt-4" style={{ opacity: 0 }}>
+        <nav
+          aria-label="Primary"
+          className={`pill-nav pointer-events-auto flex items-center gap-1 rounded-full p-1.5 pl-2 transition-shadow duration-500 ${
+            scrolled ? "shadow-[0_12px_40px_-12px_rgba(0,0,0,.6)]" : ""
+          }`}
+        >
+          <TLink href="/" className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3" data-cursor="HOME" aria-label="Phantoms home">
+            <Logo size={32} />
+            <span className="font-display text-[0.95rem] font-extrabold tracking-[-0.03em]">PHANTOMS</span>
+          </TLink>
 
-            <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
-              {nav.map((n) => (
-                <TLink
-                  key={n.href}
-                  href={n.href}
-                  className={`group relative overflow-hidden rounded-full px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] transition-colors ${
-                    active(n.href) ? "text-fg" : "text-muted hover:text-fg"
-                  }`}
-                >
-                  <span className="relative block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full">
-                    {n.label}
-                  </span>
-                  <span className="jp absolute inset-0 grid translate-y-full place-items-center text-red transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0">
-                    {n.jp}
-                  </span>
-                  {active(n.href) && (
-                    <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-red" />
-                  )}
-                </TLink>
-              ))}
-            </nav>
-
-            <div className="flex items-center gap-2">
-              <ThemeToggle />
-              <div className="hidden sm:block">
-                <Button href="/contact" variant="red" className="!h-10 !text-[0.68rem]">
-                  Start a project
-                </Button>
-              </div>
-              <button
-                type="button"
-                aria-label={open ? "Close menu" : "Open menu"}
-                onClick={() => setOpen((v) => !v)}
-                className="grid h-10 w-10 place-items-center rounded-full border border-line md:hidden"
+          <div ref={list} className="relative ml-1 hidden items-center lg:flex">
+            <span ref={ind} className="absolute inset-y-0 left-0 rounded-full bg-fg/[0.08]" style={{ opacity: 0, width: 0 }} />
+            {nav.map((n) => (
+              <TLink
+                key={n.href}
+                href={n.href}
+                data-href={n.href}
+                className="relative rounded-full px-4 py-2.5 text-[0.8rem] font-semibold tracking-[0.01em] text-fg/80 transition-colors hover:text-fg"
               >
-                {open ? <X size={18} /> : <Menu size={18} />}
-              </button>
-            </div>
+                {n.label}
+              </TLink>
+            ))}
           </div>
-        </div>
+
+          <div className="ml-2 hidden items-center gap-1.5 lg:flex">
+            <button
+              type="button"
+              onClick={openCommand}
+              aria-label="Open command menu"
+              className="mono flex h-10 items-center gap-1.5 rounded-full border border-line px-3 text-[0.7rem] text-muted transition-colors hover:border-red hover:text-fg"
+            >
+              <Command size={13} /> K
+            </button>
+            <ThemeToggle />
+            <TLink
+              href="/contact"
+              data-magnet="0.15"
+              data-cursor="TALK"
+              className="group flex h-10 items-center gap-2 rounded-full bg-fg pl-5 pr-1.5 text-[0.8rem] font-bold text-bg transition-colors hover:bg-red hover:text-white"
+            >
+              Let&apos;s talk
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-red text-white transition-colors group-hover:bg-white group-hover:text-red">
+                <ArrowUpRight size={14} strokeWidth={2.6} />
+              </span>
+            </TLink>
+          </div>
+
+          <div className="ml-2 flex items-center gap-1.5 lg:hidden">
+            <ThemeToggle />
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              onClick={() => setOpen((o) => !o)}
+              className="grid h-10 w-10 place-items-center rounded-full bg-fg text-bg"
+            >
+              {open ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
+        </nav>
       </header>
 
-      {/* Mobile menu */}
+      {/* mobile fullscreen menu */}
       <div
         ref={menu}
-        className="fixed inset-0 z-40 flex flex-col justify-between bg-bg px-6 pb-8 pt-28 md:hidden"
+        className="fixed inset-0 z-40 hidden flex-col justify-between bg-bg px-6 pb-8 pt-28 lg:hidden"
         style={{ clipPath: "circle(0% at 92% 4%)" }}
-        aria-hidden={!open}
       >
-        <div className="flex flex-col gap-2">
-          {[{ href: "/", label: "Home", jp: "家" }, ...nav].map((n, i) => (
+        <div className="grid-plus pointer-events-none absolute inset-0 opacity-50" />
+        <div className="relative flex flex-col">
+          {[{ href: "/", label: "Home" }, ...nav].map((n, i) => (
             <TLink
               key={n.href}
               href={n.href}
               data-m
-              className="font-display flex items-baseline justify-between border-b border-line py-4 text-5xl font-extrabold tracking-[-0.04em]"
+              className="font-display flex items-baseline gap-4 border-b border-line py-3.5 text-[clamp(2.2rem,10vw,3.6rem)] font-extrabold tracking-[-0.05em]"
             >
-              <span>{n.label}</span>
-              <span className="jp text-lg text-red">
-                {String(i + 1).padStart(2, "0")} {n.jp}
-              </span>
+              <span className="mono text-xs font-normal text-red">0{i + 1}</span>
+              {n.label}
             </TLink>
           ))}
         </div>
-        <div data-m className="space-y-4">
-          <p className="ar text-2xl font-semibold">عندك فكرة؟ خلينا نبنيها.</p>
-          <p className="text-sm text-muted">{site.email}</p>
+        <div data-m className="relative space-y-3">
+          <TLink href="/contact" className="btn btn-red w-full justify-between">
+            <span>Start a project</span>
+            <span className="btn-icon">
+              <ArrowUpRight size={16} />
+            </span>
+          </TLink>
+          <p className="ar text-center text-lg">عندك فكرة؟ خلينا نبنيها.</p>
+          <p className="mono text-center text-xs text-muted">{site.email}</p>
         </div>
       </div>
+      <CommandMenu />
     </>
   );
 }

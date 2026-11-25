@@ -7,6 +7,8 @@ import { PageTransition } from "@/components/layout/PageTransition";
 import { Preloader } from "@/components/layout/Preloader";
 import { Navbar } from "@/components/layout/Navbar";
 import { Cursor } from "@/components/ui/Brand";
+import { Fx } from "@/components/ui/Fx";
+import { ScrollProgress } from "@/components/layout/ScrollProgress";
 
 export function Providers({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
   return (
@@ -17,6 +19,8 @@ export function Providers({ children, footer }: { children: ReactNode; footer?: 
           <Navbar />
           <main id="main">{children}</main>
           {footer}
+          <ScrollProgress />
+          <Fx />
           <Cursor />
         </PageTransition>
       </SmoothScroll>

@@ -21,13 +21,13 @@ export default function OmniPage() {
   const p = getProject("omni")!;
   return (
     <>
-      <PageHero label="Flagship 02 · 群" title={<>OMNI<span className="text-red">.</span></>} ar="سرب واحد، عقل واحد." kanji="群">
+      <PageHero label="Flagship 02" title={<>OMNI<span className="text-red">.</span></>} ar="سرب واحد، عقل واحد.">
         {p.summary}
       </PageHero>
       <OmniStage />
       <section className="py-24 sm:py-32">
         <div className="wrap">
-          <Label>Architecture · 核</Label>
+          <Label>Architecture</Label>
           <h2 className="font-display tight mt-6 max-w-3xl text-[clamp(2.4rem,6vw,5.4rem)] font-extrabold">
             One protocol. <span className="serif-i text-red">Two</span> worlds.
           </h2>

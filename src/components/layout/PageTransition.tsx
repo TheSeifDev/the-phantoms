@@ -21,7 +21,7 @@ export const usePageTransition = () => useContext(TransitionContext);
 
 const labelFor = (href: string) => {
   const base = "/" + (href.split("/")[1] ?? "");
-  return nav.find((n) => n.href === base) ?? { label: href === "/" ? "Home" : "Phantoms", jp: "幻影" };
+  return nav.find((n) => n.href === base) ?? { label: href === "/" ? "Home" : "Phantoms" };
 };
 
 export function PageTransition({ children }: { children: ReactNode }) {
@@ -74,7 +74,6 @@ export function PageTransition({ children }: { children: ReactNode }) {
       busy.current = true;
       pending.current = true;
       const l = labelFor(target);
-      if (kanji.current) kanji.current.textContent = l.jp;
       if (word.current) word.current.textContent = l.label;
       gsap.set(panel.current, { yPercent: 100 });
       gsap.to(panel.current, {
@@ -104,10 +103,14 @@ export function PageTransition({ children }: { children: ReactNode }) {
         style={{ transform: "translateY(100%)", borderRadius: "50% 50% 0 0 / 8% 8% 0 0" }}
       >
         <div className="text-center">
-          <div ref={kanji} className="jp text-[clamp(5rem,18vw,14rem)] leading-none" />
+          <div ref={kanji} className="mx-auto mb-5 h-14 w-14">
+            <svg viewBox="0 0 200 200" className="h-full w-full">
+              <path d="M100 8 L180 54 L180 146 L100 192 L20 146 L20 54 Z" fill="none" stroke="#fff" strokeWidth="9" strokeLinejoin="round" />
+            </svg>
+          </div>
           <div
             ref={word}
-            className="font-display mt-2 text-sm font-semibold uppercase tracking-[0.4em]"
+            className="font-display text-[clamp(2.4rem,9vw,6rem)] font-extrabold uppercase leading-none tracking-[-0.05em]"
           />
         </div>
       </div>

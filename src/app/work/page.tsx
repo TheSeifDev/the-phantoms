@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function WorkPage() {
   return (
     <>
-      <PageHero label="Work · 作品" title={<>Selected <span className="serif-i text-red">work</span></>} ar="شغلنا بيتكلم." kanji="作">
+      <PageHero label="Work" title={<>Selected <span className="serif-i text-red">work</span></>} ar="شغلنا بيتكلم.">
         Products we designed, engineered and launched. Filter by what you&apos;re planning to build.
       </PageHero>
       <section className="pb-10">

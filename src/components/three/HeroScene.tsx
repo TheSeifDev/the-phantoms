@@ -1,184 +1,135 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 /**
- * The Phantom sun: ~9k particles on a disc, swirling slowly,
- * repelled by the pointer, dispersing upward as the page scrolls.
+ * Hero background: a handful of glossy hex prisms with thin glowing red edges,
+ * reflecting a studio environment. Pointer + scroll parallax, nothing busy.
  */
+const SPOTS: [number, number, number, number][] = [
+  // nx, ny (screen space -1..1), z, size
+  [-0.88, 0.5, -1.0, 1.15],
+  [-0.66, -0.72, 0.5, 0.55],
+  [0.9, 0.58, -0.5, 0.9],
+  [0.74, -0.48, 0.8, 1.2],
+  [-0.97, -0.12, 1.4, 0.4],
+  [0.46, 0.9, 0.2, 0.42],
+  [-0.3, -0.98, -0.8, 0.62],
+  [0.98, 0.0, -2.0, 0.5],
+];
+
 export default function HeroScene({ className = "" }: { className?: string }) {
   const host = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = host.current;
     if (!el) return;
-
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    const small = window.innerWidth < 768;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
     renderer.setClearColor(0x000000, 0);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
     el.appendChild(renderer.domElement);
     renderer.domElement.style.cssText = "position:absolute;inset:0;width:100%;height:100%;display:block";
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 50);
-    camera.position.z = 6;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+    scene.environment = envRT.texture;
 
-    const N = window.innerWidth < 768 ? 5200 : 9000;
-    const pos = new Float32Array(N * 3);
-    const seed = new Float32Array(N);
-    const rad = new Float32Array(N);
-    for (let i = 0; i < N; i++) {
-      // bias to rim + core so it reads as a sun with a corona
-      const t = Math.random();
-      const r = t < 0.62 ? Math.sqrt(Math.random()) * 1.55 : 1.55 + Math.pow(Math.random(), 2.2) * 1.5;
-      const a = Math.random() * Math.PI * 2;
-      pos[i * 3] = Math.cos(a) * r;
-      pos[i * 3 + 1] = Math.sin(a) * r;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 1.2 * (r / 3);
-      seed[i] = Math.random();
-      rad[i] = r;
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute("aSeed", new THREE.BufferAttribute(seed, 1));
-    geo.setAttribute("aRad", new THREE.BufferAttribute(rad, 1));
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+    camera.position.set(0, 0, 14);
 
-    const uniforms = {
-      uTime: { value: 0 },
-      uMouse: { value: new THREE.Vector2(99, 99) },
-      uScroll: { value: 0 },
-      uPixel: { value: renderer.getPixelRatio() },
-      uIn: { value: reduce ? 1 : 0 },
-    };
+    const key = new THREE.DirectionalLight(0xff3a28, 2.2);
+    key.position.set(4, 5, 6);
+    scene.add(key);
 
-    const mat = new THREE.ShaderMaterial({
-      uniforms,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      vertexShader: /* glsl */ `
-        uniform float uTime, uScroll, uPixel, uIn;
-        uniform vec2 uMouse;
-        attribute float aSeed;
-        attribute float aRad;
-        varying float vHeat;
-        varying float vSeed;
-        void main(){
-          vec3 p = position;
-          float r = aRad;
-          // swirl: inner spins faster
-          float ang = uTime * (0.16 / (0.45 + r)) * (aSeed > 0.5 ? 1.0 : 0.6);
-          float c = cos(ang), s = sin(ang);
-          p.xy = mat2(c, -s, s, c) * p.xy;
-          // breathing
-          p.xy *= 1.0 + 0.025 * sin(uTime * 0.9 + r * 2.0);
-          // intro: particles fly in from far
-          float inn = smoothstep(0.0, 1.0, clamp(uIn * 1.25 - aSeed * 0.25, 0.0, 1.0));
-          p.xy *= mix(2.4 + aSeed * 2.0, 1.0, inn);
-          p.z += (1.0 - inn) * 3.0;
-          // pointer repel
-          vec2 d = p.xy - uMouse;
-          float dist = length(d);
-          float push = smoothstep(1.35, 0.0, dist);
-          p.xy += normalize(d + 0.0001) * push * (0.55 + aSeed * 0.5);
-          p.z += push * 0.6;
-          // scroll dispersal (rise + scatter)
-          p.y += uScroll * (1.4 + aSeed * 3.2);
-          p.x += uScroll * (aSeed - 0.5) * 3.0;
-          vHeat = 1.0 - smoothstep(0.0, 3.1, r);
-          vSeed = aSeed;
-          vec4 mv = modelViewMatrix * vec4(p, 1.0);
-          gl_PointSize = (1.6 + aSeed * 2.8 + push * 3.0) * uPixel * (6.0 / -mv.z);
-          gl_Position = projectionMatrix * mv;
-        }
-      `,
-      fragmentShader: /* glsl */ `
-        varying float vHeat;
-        varying float vSeed;
-        void main(){
-          vec2 uv = gl_PointCoord - 0.5;
-          float d = length(uv);
-          if(d > 0.5) discard;
-          float a = smoothstep(0.5, 0.0, d);
-          vec3 deep = vec3(0.70, 0.0, 0.02);
-          vec3 red = vec3(1.0, 0.14, 0.09);
-          vec3 hot = vec3(1.0, 0.62, 0.45);
-          vec3 col = mix(deep, red, smoothstep(0.0, 0.45, vHeat + vSeed * 0.15));
-          col = mix(col, hot, smoothstep(0.62, 1.0, vHeat));
-          gl_FragColor = vec4(col, a * (0.35 + vHeat * 0.65));
-        }
-      `,
+    const bodyGeo = new THREE.CylinderGeometry(1, 1, 0.34, 6);
+    const edgeGeo = new THREE.EdgesGeometry(bodyGeo, 20);
+    const bodyMat = new THREE.MeshPhysicalMaterial({
+      color: 0x15151a,
+      metalness: 0.85,
+      roughness: 0.22,
+      clearcoat: 1,
+      clearcoatRoughness: 0.15,
+      envMapIntensity: 1.1,
     });
-    const points = new THREE.Points(geo, mat);
-    scene.add(points);
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0xff2a1a, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending });
 
-    // faint orbit ring
-    const ringGeo = new THREE.RingGeometry(3.28, 3.295, 160);
-    const ring = new THREE.Mesh(
-      ringGeo,
-      new THREE.MeshBasicMaterial({ color: 0xff2418, transparent: true, opacity: 0.35, side: THREE.DoubleSide }),
-    );
-    scene.add(ring);
+    const group = new THREE.Group();
+    scene.add(group);
+    const items: { g: THREE.Group; base: THREE.Vector2; z: number; s: number; spin: THREE.Vector3; ph: number }[] = [];
+    SPOTS.slice(0, small ? 5 : SPOTS.length).forEach(([nx, ny, z, s], i) => {
+      const g = new THREE.Group();
+      g.add(new THREE.Mesh(bodyGeo, bodyMat));
+      g.add(new THREE.LineSegments(edgeGeo, edgeMat));
+      g.scale.setScalar(s);
+      g.rotation.set(1.05 + i * 0.12, 0.2 * i, 0.3 * i);
+      group.add(g);
+      items.push({
+        g,
+        base: new THREE.Vector2(nx, ny),
+        z,
+        s,
+        spin: new THREE.Vector3(0.05 + (i % 3) * 0.03, 0.12 - (i % 2) * 0.05, 0.04),
+        ph: i * 1.7,
+      });
+    });
 
+    let aspect = 1;
+    const place = () => {
+      const h = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (camera.position.z - 0);
+      const w = h * aspect;
+      items.forEach((it) => it.g.position.set(it.base.x * (w / 2), it.base.y * (h / 2), it.z));
+    };
     const layout = () => {
       const w = el.clientWidth;
       const h = el.clientHeight;
       renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      // push the sun right on wide screens, center on narrow
-      const wide = w > 900;
-      points.position.x = ring.position.x = wide ? Math.min(2.5, w / 560) : 0;
-      points.position.y = ring.position.y = wide ? 0 : 0.9;
-      const s = wide ? 1 : Math.min(1, w / 520);
-      points.scale.setScalar(s);
-      ring.scale.setScalar(s);
+      aspect = w / h;
+      camera.aspect = aspect;
       camera.updateProjectionMatrix();
+      place();
     };
     layout();
     const ro = new ResizeObserver(layout);
     ro.observe(el);
 
-    const mouse = new THREE.Vector2(99, 99);
-    const target = new THREE.Vector2(99, 99);
+    const mouse = new THREE.Vector2();
+    const smooth = new THREE.Vector2();
     const onMove = (e: PointerEvent) => {
-      const rect = el.getBoundingClientRect();
-      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      const ny = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-      // project onto z=0 plane
-      const vFov = (camera.fov * Math.PI) / 180;
-      const h = 2 * Math.tan(vFov / 2) * camera.position.z;
-      const w = h * camera.aspect;
-      target.set(nx * (w / 2) - points.position.x, ny * (h / 2) - points.position.y);
-      target.divideScalar(points.scale.x);
+      mouse.set((e.clientX / window.innerWidth) * 2 - 1, -((e.clientY / window.innerHeight) * 2 - 1));
     };
-    const onLeave = () => target.set(99, 99);
-    window.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
+    window.addEventListener("pointermove", onMove, { passive: true });
 
     let visible = true;
-    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0 });
+    const io = new IntersectionObserver(([x]) => (visible = x.isIntersecting));
     io.observe(el);
 
-    let raf = 0;
     const clock = new THREE.Clock();
-    let intro = 0;
+    let raf = 0;
     const loop = () => {
       raf = requestAnimationFrame(loop);
       if (!visible || document.hidden) return;
-      const dt = clock.getDelta();
-      uniforms.uTime.value += dt;
-      if (intro < 1 && !reduce) {
-        if (window.__phantomsReady) intro = Math.min(1, intro + dt / 2.4);
-        uniforms.uIn.value = 1 - Math.pow(1 - intro, 3);
-      }
-      mouse.lerp(target, 0.09);
-      uniforms.uMouse.value.copy(mouse);
-      const sc = Math.min(1, window.scrollY / (window.innerHeight * 0.9));
-      uniforms.uScroll.value += (sc - uniforms.uScroll.value) * 0.08;
-      points.rotation.y = Math.sin(uniforms.uTime.value * 0.2) * 0.12 + mouse.x * 0.01;
-      ring.rotation.z = uniforms.uTime.value * 0.03;
+      const t = clock.getElapsedTime();
+      smooth.lerp(mouse, 0.05);
+      const sy = window.scrollY / window.innerHeight;
+      items.forEach((it) => {
+        if (!reduce) {
+          it.g.rotation.x += it.spin.x * 0.012;
+          it.g.rotation.y += it.spin.y * 0.012;
+        }
+        it.g.position.y += (Math.sin(t * 0.6 + it.ph) * 0.0022) * (1 + it.s);
+        it.g.position.z = it.z + sy * (1.5 + it.s) * 1.2;
+      });
+      camera.position.x = smooth.x * 0.6;
+      camera.position.y = smooth.y * 0.35 - sy * 0.8;
+      camera.lookAt(0, -sy * 0.5, 0);
+      edgeMat.opacity = 0.75 + Math.sin(t * 1.6) * 0.18;
       renderer.render(scene, camera);
     };
     loop();
@@ -188,11 +139,12 @@ export default function HeroScene({ className = "" }: { className?: string }) {
       ro.disconnect();
       io.disconnect();
       window.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-      geo.dispose();
-      mat.dispose();
-      ringGeo.dispose();
-      (ring.material as THREE.Material).dispose();
+      bodyGeo.dispose();
+      edgeGeo.dispose();
+      bodyMat.dispose();
+      edgeMat.dispose();
+      envRT.dispose();
+      pmrem.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     };

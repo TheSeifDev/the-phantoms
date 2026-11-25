@@ -1,31 +1,28 @@
 "use client";
-
 import { useRef } from "react";
-import { Boxes, Layers, MessagesSquare, Rocket } from "lucide-react";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
-import { Button, Counter, Fade, Label, WordScrub } from "@/components/ui";
-import { stats } from "@/data/site";
-
-const points = [
-  { icon: Layers, title: "Studio craft", text: "Motion, type and layout held to an awards-level bar." },
-  { icon: Boxes, title: "Engineered end to end", text: "Typed from database schema to the last pixel." },
-  { icon: MessagesSquare, title: "Direct line", text: "You talk to the people who actually build it." },
-  { icon: Rocket, title: "Ship and stay", text: "We launch it, then keep it healthy." },
-];
+import { Counter, Label, WordScrub } from "@/components/ui";
+import { HexAvatar, HexOutline } from "@/components/ui/Hex";
+import { FooterClock } from "@/components/layout/FooterBits";
+import { marqueeTech } from "@/data/site";
 
 export function About({ compact = false }: { compact?: boolean }) {
   const root = useRef<HTMLElement>(null);
-
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      gsap.to("[data-about-img]", {
-        yPercent: -10,
-        ease: "none",
-        scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: true },
+      gsap.from("[data-bento] > *", {
+        opacity: 0,
+        y: 60,
+        scale: 0.94,
+        duration: 1.1,
+        ease: "expo.out",
+        stagger: 0.08,
+        scrollTrigger: { trigger: "[data-bento]", start: "top 82%", once: true },
       });
-      gsap.to("[data-about-sun]", {
-        scale: 1.5,
+      gsap.to("[data-hexfloat]", {
+        y: -120,
+        rotate: 40,
         ease: "none",
         scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: true },
       });
@@ -34,89 +31,104 @@ export function About({ compact = false }: { compact?: boolean }) {
   );
 
   return (
-    <section ref={root} className="px-2 sm:px-3">
-      <div className="inv relative overflow-hidden rounded-[1.6rem] sm:rounded-[2.4rem]">
-        <div className="wrap relative py-20 sm:py-28">
-          <div className="grid gap-14 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
-            {/* portrait */}
-            <div className="relative order-2 lg:order-1">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem]">
-                <div
-                  data-about-sun
-                  className="absolute right-[8%] top-[10%] h-[34%] w-[34%] rounded-full bg-red blur-3xl opacity-60"
-                />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  data-about-img
-                  src="/work/phantom-figure.webp"
-                  alt="A masked phantom in a black cloak under a red moon"
-                  loading="lazy"
-                  className="absolute inset-0 h-[118%] w-full object-cover"
-                />
-                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent" />
-                <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-white">
-                  <span className="jp text-4xl">幻影</span>
-                  <span className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] opacity-80">
-                    Phantoms / 01
-                  </span>
+    <section ref={root} id="about" data-section="About" className="relative overflow-hidden sec-pad">
+      <div data-hexfloat aria-hidden className="pointer-events-none absolute -left-16 top-24 text-red/60">
+        <HexOutline size={170} />
+      </div>
+      <div className="wrap relative">
+        {!compact && (
+          <div className="max-w-5xl">
+            <Label>Who we are</Label>
+            <WordScrub className="font-display tight mt-8 text-[clamp(2rem,5vw,4.6rem)] font-bold [line-height:1.02]">
+              Phantoms is a product team that designs, engineers and ships — websites, apps and SaaS that people actually enjoy using.
+            </WordScrub>
+          </div>
+        )}
+
+        <div data-bento className={`grid gap-3 md:grid-cols-6 ${compact ? "" : "mt-16"}`}>
+          {/* members */}
+          <div data-spot data-tilt="2.5" className="card relative overflow-hidden bg-red !border-transparent p-7 text-white md:col-span-3 md:row-span-2 md:min-h-[26rem]">
+            <div aria-hidden className="absolute -right-10 -top-10 text-white/20">
+              <HexOutline size={330} width={1.2} />
+            </div>
+            <div aria-hidden className="absolute -bottom-16 right-10 text-white/10">
+              <HexOutline size={200} width={1.2} />
+            </div>
+            <div className="relative flex h-full flex-col justify-between">
+              <span className="mono text-[0.7rem] uppercase tracking-[0.16em] opacity-80">The team</span>
+              <div>
+                <div className="font-display text-[clamp(6rem,15vw,12rem)] font-extrabold leading-[0.8] tracking-[-0.08em]">
+                  <Counter to={25} />
+                </div>
+                <div className="mt-4 flex items-end justify-between gap-4">
+                  <p className="max-w-[16rem] text-[0.95rem] font-medium leading-snug opacity-90">
+                    Engineers, designers and researchers working in six focused squads.
+                  </p>
+                  <div className="flex -space-x-3">
+                    {["SA", "AE", "P3", "P4", "P5"].map((n, i) => (
+                      <HexAvatar key={n} name={n} size={44} tone={i % 2 ? "dark" : "light"} className="ring-2 ring-red" />
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="absolute -right-3 top-8 grid h-20 w-20 rotate-6 place-items-center rounded-md bg-red text-white shadow-xl">
-                <span className="jp vertical text-lg leading-none">影の者</span>
-              </div>
             </div>
+          </div>
 
-            {/* copy */}
-            <div className="order-1 lg:order-2">
-              <Label>Who we are · 我々</Label>
-              <WordScrub className="font-display mt-6 text-[clamp(1.9rem,4.3vw,4.1rem)] font-semibold leading-[1.04] tracking-[-0.035em]">
-                We are Phantoms — a team of engineers, designers and researchers who build{" "}
-                <span className="serif-i text-red">websites, apps and SaaS</span> with the discipline of a
-                studio and the speed of a startup. We stay out of the spotlight so your product can step
-                into it.
-              </WordScrub>
-              <Fade delay={0.1}>
-                <p className="ar muted mt-6 text-xl font-medium">
-                  فريق من الإسكندرية بيحوّل الأفكار لمنتجات حقيقية — من أول سطر كود لحد الإطلاق.
-                </p>
-              </Fade>
-
-              <div className="mt-12 grid gap-x-10 gap-y-8 sm:grid-cols-2">
-                {points.map((p, i) => (
-                  <Fade key={p.title} delay={i * 0.07} y={24} className="flex gap-4">
-                    <p.icon className="mt-1 shrink-0 text-red" size={22} strokeWidth={1.8} />
-                    <div>
-                      <h3 className="font-display text-lg font-bold tracking-tight">{p.title}</h3>
-                      <p className="muted mt-1 text-sm leading-relaxed">{p.text}</p>
-                    </div>
-                  </Fade>
-                ))}
+          {/* clock */}
+          <div data-spot className="card flex flex-col justify-between p-7 md:col-span-3">
+            <div className="flex items-center justify-between">
+              <span className="label">Based in</span>
+              <span className="mono flex items-center gap-2 text-[0.68rem] text-muted">
+                <span className="pulse-dot h-2 w-2 rounded-full bg-[#2bd96b]" /> online
+              </span>
+            </div>
+            <div className="mt-8 flex items-end justify-between gap-4">
+              <div>
+                <div className="font-display text-4xl font-extrabold tracking-[-0.05em] sm:text-5xl">Alexandria</div>
+                <div className="mono mt-1 text-xs text-muted">31.2001° N · 29.9187° E</div>
               </div>
-
-              {!compact && (
-                <Fade className="mt-12">
-                  <Button href="/team" variant="light" className="!bg-[var(--inv-fg)] !text-[var(--inv-bg)] [&_.btn-icon]:!bg-red [&_.btn-icon]:!text-white">
-                    About the studio
-                  </Button>
-                </Fade>
-              )}
+              <FooterClock />
             </div>
           </div>
 
           {/* numbers */}
-          <div className="mt-20 sm:mt-28">
-            <Label>By the numbers · 数字</Label>
-            <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
-              {stats.map((s) => (
-                <div key={s.label}>
-                  <div className="font-display text-[clamp(3.2rem,7vw,6.5rem)] font-extrabold leading-none tracking-[-0.05em]">
-                    <Counter to={s.value} suffix={s.suffix} />
-                  </div>
-                  <div className="dotted mt-4 pb-3 text-sm font-bold">{s.label}</div>
-                  <p className="muted mt-3 max-w-[22ch] text-xs leading-relaxed">{s.note}</p>
+          <div className="grid grid-cols-2 gap-3 md:col-span-3">
+            {[
+              { to: 12, s: "+", l: "Projects shipped" },
+              { to: 2, s: "", l: "Flagship products" },
+            ].map((s) => (
+              <div key={s.l} data-spot className="card flex flex-col justify-between p-6">
+                <div className="font-display text-[clamp(3.2rem,5.4vw,5rem)] font-extrabold leading-none tracking-[-0.07em]">
+                  <Counter to={s.to} suffix={s.s} />
                 </div>
+                <div className="mt-6 text-sm text-muted">{s.l}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* stack */}
+          <div data-spot className="card p-7 md:col-span-3">
+            <span className="label">Stack we ship with</span>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {marqueeTech.slice(0, 14).map((t) => (
+                <span key={t} className="chip !normal-case !tracking-normal text-fg/80">
+                  {t}
+                </span>
               ))}
             </div>
+          </div>
+
+          {/* languages */}
+          <div data-spot className="card relative overflow-hidden p-7 md:col-span-3">
+            <span className="label">Two languages, one team</span>
+            <div className="mt-6 flex items-end justify-between gap-6">
+              <div className="font-display text-5xl font-extrabold tracking-[-0.06em]">EN</div>
+              <div className="h-px flex-1 bg-line" />
+              <div className="ar text-5xl font-bold">عربي</div>
+            </div>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted">
+              Interfaces in English, Arabic or both — real RTL, proper Arabic typography, and Egyptian-dialect aware AI.
+            </p>
           </div>
         </div>
       </div>

@@ -37,13 +37,13 @@ export function Button({
   );
   if (href) {
     return (
-      <TLink href={href} className={cls} data-cursor={cursor}>
+      <TLink href={href} className={cls} data-cursor={cursor} data-magnet="0.2">
         {inner}
       </TLink>
     );
   }
   return (
-    <button type={type ?? "button"} onClick={onClick} disabled={disabled} className={`${cls} disabled:opacity-60`}>
+    <button type={type ?? "button"} data-magnet="0.2" onClick={onClick} disabled={disabled} className={`${cls} disabled:opacity-60`}>
       {inner}
     </button>
   );
@@ -306,11 +306,11 @@ export function ProjectCover({ p, className = "", fit = "cover" }: { p: Project;
         background: `radial-gradient(120% 90% at 20% 10%, ${p.hue[0]}cc 0%, transparent 55%), radial-gradient(90% 80% at 90% 100%, ${p.hue[0]}66 0%, transparent 60%), ${p.hue[1]}`,
       }}
     >
-      <div className="grid-lines absolute inset-0 opacity-40" />
-      <span className="jp absolute -bottom-[8%] -right-[4%] select-none text-[min(60vw,22rem)] leading-none text-white/15">
-        {p.kanji}
-      </span>
-      <span className="font-display absolute left-6 top-6 text-3xl font-bold tracking-tight text-white/90">
+      <svg aria-hidden viewBox="0 0 100 100" className="absolute left-1/2 top-1/2 h-[70%] w-auto -translate-x-1/2 -translate-y-1/2 text-white/20" fill="none" stroke="currentColor" strokeWidth="0.6">
+        <path d="M50 4 90 27v46L50 96 10 73V27z" />
+        <path d="M50 20 76 35v30L50 80 24 65V35z" />
+      </svg>
+      <span className="font-display absolute inset-0 grid place-items-center px-6 text-center text-[clamp(1.8rem,3.4vw,3rem)] font-extrabold tracking-[-0.04em] text-white/90">
         {p.title}
       </span>
     </div>

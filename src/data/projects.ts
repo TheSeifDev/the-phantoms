@@ -3,7 +3,6 @@ export type WorkType = "Web" | "App" | "SaaS";
 export interface Project {
   slug: string;
   title: string;
-  kanji: string;
   types: WorkType[];
   year: string;
   tagline: string;
@@ -25,7 +24,6 @@ export const projects: Project[] = [
   {
     slug: "rafiq",
     title: "RAFIQ",
-    kanji: "相棒",
     types: ["App", "SaaS"],
     year: "2025 — now",
     tagline: "A local-first Arabic AI companion that remembers, so you can just live.",
@@ -53,7 +51,6 @@ export const projects: Project[] = [
   {
     slug: "omni",
     title: "OMNI",
-    kanji: "群",
     types: ["App"],
     year: "2026",
     tagline: "Microbots that think as one swarm.",
@@ -78,7 +75,6 @@ export const projects: Project[] = [
   {
     slug: "phantoms-ops",
     title: "PHANTOMS Ops",
-    kanji: "運営",
     types: ["SaaS", "Web", "App"],
     year: "2026",
     tagline: "The operations platform that runs the team itself.",
@@ -103,7 +99,6 @@ export const projects: Project[] = [
   {
     slug: "it-sum",
     title: "IT-SUM",
-    kanji: "学び",
     types: ["Web"],
     year: "2026",
     tagline: "A learning platform and content hub for IT students.",
@@ -124,7 +119,6 @@ export const projects: Project[] = [
   {
     slug: "trackup",
     title: "TrackUp",
-    kanji: "記録",
     types: ["SaaS", "Web"],
     year: "2026",
     tagline: "Turn videos into actionable insights.",
@@ -144,7 +138,6 @@ export const projects: Project[] = [
   {
     slug: "nabd-masr",
     title: "Nabd Masr",
-    kanji: "鼓動",
     types: ["Web"],
     year: "2026",
     tagline: "Connecting blood donors with recipients in real time.",
@@ -168,7 +161,6 @@ export const services = [
     key: "Web" as WorkType,
     title: "Web",
     ar: "مواقع ومنصات",
-    kanji: "網",
     line: "Marketing sites, learning platforms, company websites and landing pages that look expensive and load fast.",
     items: ["Company & landing sites", "Learning & community platforms", "Dashboards and admin panels", "SEO, performance, accessibility"],
     stack: ["Next.js", "Tailwind", "GSAP", "Three.js"],
@@ -179,7 +171,6 @@ export const services = [
     key: "App" as WorkType,
     title: "Apps",
     ar: "تطبيقات موبايل وويب",
-    kanji: "器",
     line: "Cross-platform mobile and desktop apps — offline-first when it matters, native-feeling always.",
     items: ["iOS & Android with Expo", "Desktop with Electron", "Realtime & offline sync", "Devices and IoT integration"],
     stack: ["React Native", "Expo", "Electron", "MQTT"],
@@ -190,7 +181,6 @@ export const services = [
     key: "SaaS" as WorkType,
     title: "SaaS",
     ar: "أنظمة بتتباع كخدمة",
-    kanji: "核",
     line: "Multi-tenant products with auth, billing-ready data models and the operational tooling to run them.",
     items: ["Auth, roles and tenancy", "Admin & analytics layers", "AI features & RAG", "API design and integrations"],
     stack: ["NestJS", "PostgreSQL", "Neon", "Supabase"],
@@ -203,7 +193,7 @@ export interface Member {
   name: string;
   role: string;
   squad: string;
-  kanji: string;
+  handle: string;
   bio: string;
   link?: string;
   linkLabel?: string;
@@ -219,7 +209,7 @@ export const members: Member[] = [
     name: "Seif Ayman",
     role: "Founder & Technical Lead",
     squad: "Platform",
-    kanji: "導",
+    handle: "@theseif",
     bio: "Defines architecture, API conventions and standards across web, desktop, AI and IoT work. Full-stack from schema to interface.",
     link: "https://theseif.vercel.app",
     linkLabel: "theseif.vercel.app",
@@ -230,25 +220,25 @@ export const members: Member[] = [
     name: "Ahmed Eid",
     role: "AI Team Leader",
     squad: "AI & Data",
-    kanji: "智",
+    handle: "@7lf",
     bio: "Local LLMs, retrieval and voice. Designs the AI track of RAFIQ — from speech pipeline to benchmarks.",
     link: "https://7lf.dev",
     linkLabel: "7lf.dev",
     lead: true,
   },
-  { slug: "phantom-03", name: "Phantom 03", role: "Frontend & Motion", squad: "Web", kanji: "動", bio: "Interfaces, motion systems and design engineering.", placeholder: true },
-  { slug: "phantom-04", name: "Phantom 04", role: "Mobile Engineer", squad: "Apps", kanji: "携", bio: "Expo and React Native, offline-first mobile.", placeholder: true },
-  { slug: "phantom-05", name: "Phantom 05", role: "Embedded & IoT", squad: "Hardware", kanji: "電", bio: "ESP32, sensors and MQTT — where code meets the room.", placeholder: true },
-  { slug: "phantom-06", name: "Phantom 06", role: "UI / UX Designer", squad: "Design", kanji: "美", bio: "Brand, product design and prototypes.", placeholder: true },
-  { slug: "phantom-07", name: "Phantom 07", role: "Security Engineer", squad: "Platform", kanji: "盾", bio: "Auth, hardening and secure-by-default architecture.", placeholder: true },
-  { slug: "phantom-08", name: "Phantom 08", role: "Backend Engineer", squad: "Platform", kanji: "核", bio: "APIs, databases and the plumbing that keeps it up.", placeholder: true },
+  { slug: "phantom-03", name: "Phantom 03", role: "Frontend & Motion", squad: "Web", handle: "@phantom_03", bio: "Interfaces, motion systems and design engineering.", placeholder: true },
+  { slug: "phantom-04", name: "Phantom 04", role: "Mobile Engineer", squad: "Apps", handle: "@phantom_04", bio: "Expo and React Native, offline-first mobile.", placeholder: true },
+  { slug: "phantom-05", name: "Phantom 05", role: "Embedded & IoT", squad: "Hardware", handle: "@phantom_05", bio: "ESP32, sensors and MQTT — where code meets the room.", placeholder: true },
+  { slug: "phantom-06", name: "Phantom 06", role: "UI / UX Designer", squad: "Design", handle: "@phantom_06", bio: "Brand, product design and prototypes.", placeholder: true },
+  { slug: "phantom-07", name: "Phantom 07", role: "Security Engineer", squad: "Platform", handle: "@phantom_07", bio: "Auth, hardening and secure-by-default architecture.", placeholder: true },
+  { slug: "phantom-08", name: "Phantom 08", role: "Backend Engineer", squad: "Platform", handle: "@phantom_08", bio: "APIs, databases and the plumbing that keeps it up.", placeholder: true },
 ];
 
 export const squads = [
-  { name: "Web", jp: "網", note: "Sites, platforms, motion" },
-  { name: "Apps", jp: "器", note: "Mobile & desktop" },
-  { name: "AI & Data", jp: "智", note: "LLMs, RAG, voice" },
-  { name: "Hardware", jp: "電", note: "ESP32, IoT, robotics" },
-  { name: "Design", jp: "美", note: "Brand & product" },
-  { name: "Platform", jp: "核", note: "Architecture & security" },
+  { name: "Web", note: "Sites, platforms, motion" },
+  { name: "Apps", note: "Mobile & desktop" },
+  { name: "AI & Data", note: "LLMs, RAG, voice" },
+  { name: "Hardware", note: "ESP32, IoT, robotics" },
+  { name: "Design", note: "Brand & product" },
+  { name: "Platform", note: "Architecture & security" },
 ];

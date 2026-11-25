@@ -1,164 +1,128 @@
 "use client";
-
 import { useRef, useState } from "react";
-import { Plus } from "lucide-react";
+import { ArrowUpRight, Check, Copy, MessageCircle } from "lucide-react";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
+import { Button, Label, Reveal, RotatingBadge } from "@/components/ui";
+import { HexOutline } from "@/components/ui/Hex";
+import { ScrollMarquee } from "@/components/ui/ScrollMarquee";
 import { TLink } from "@/components/layout/PageTransition";
-import { Fade, Label, Reveal, RotatingBadge } from "@/components/ui";
-import { faqs } from "@/data/site";
+import { site } from "@/data/site";
 
-/* ───────── CTA — split type with a centre button ───────── */
-export function CTA() {
+export function CTA({ id = "contact-cta" }: { id?: string }) {
   const root = useRef<HTMLElement>(null);
+  const [copied, setCopied] = useState(false);
+
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      gsap.from("[data-l]", { xPercent: -30, opacity: 0, ease: "none", scrollTrigger: { trigger: root.current, start: "top 90%", end: "top 25%", scrub: true } });
-      gsap.from("[data-r]", { xPercent: 30, opacity: 0, ease: "none", scrollTrigger: { trigger: root.current, start: "top 90%", end: "top 25%", scrub: true } });
+      gsap.fromTo(
+        "[data-cta-card]",
+        { scale: 0.9, borderRadius: "5rem" },
+        {
+          scale: 1,
+          borderRadius: "3rem",
+          ease: "none",
+          scrollTrigger: { trigger: root.current, start: "top 95%", end: "top 30%", scrub: true },
+        },
+      );
+      gsap.to("[data-cta-hex]", {
+        y: -140,
+        rotate: 60,
+        ease: "none",
+        scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: true },
+      });
+      gsap.fromTo("[data-cta-in]", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "expo.out", stagger: 0.1, scrollTrigger: { trigger: root.current, start: "top 60%", once: true } });
     },
     { scope: root },
   );
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(site.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      window.location.href = `mailto:${site.email}`;
+    }
+  };
+
   return (
-    <section ref={root} className="px-2 py-10 sm:px-3 sm:py-16">
-      <div className="relative overflow-hidden rounded-[1.6rem] border border-line bg-surface sm:rounded-[2.4rem]">
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(55% 70% at 50% 110%, rgba(255,36,24,.55), transparent 70%), radial-gradient(40% 40% at 8% 0%, rgba(255,36,24,.18), transparent 70%)",
-          }}
-        />
-        <div className="grid-lines absolute inset-0 opacity-40" aria-hidden />
-        <div className="wrap relative flex min-h-[34rem] flex-col items-center justify-center py-20 text-center sm:min-h-[42rem]">
-          <Label>Let&apos;s talk · 連絡</Label>
-          <div className="mt-10 w-full">
-            <div data-l className="font-display tight text-left text-[clamp(3rem,11.5vw,11rem)] font-extrabold">
-              Got an
+    <section ref={root} id={id} data-section="Contact" className="relative px-3 pb-6 pt-6 sm:px-4">
+      <div
+        data-cta-card
+        className="relative isolate overflow-hidden rounded-[3rem] bg-[#0a0a0c] text-white ring-1 ring-white/10"
+        style={{ boxShadow: "0 60px 160px -60px rgba(255,36,24,.45)" }}
+      >
+        {/* glow + grid */}
+        <div aria-hidden className="grid-lines absolute inset-0 -z-10 opacity-60 [--grid:rgba(255,255,255,.06)]" />
+        <div aria-hidden className="blob-glow -bottom-40 left-1/2 -z-10 h-[30rem] w-[70rem] -translate-x-1/2" style={{ background: "radial-gradient(closest-side, rgba(255,36,24,.55), rgba(255,120,30,.18) 55%, transparent)" }} />
+        {/* giant outlined marquee */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 -translate-y-1/2 select-none opacity-90">
+          <ScrollMarquee speed={60}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <span key={i} className="font-display flex items-center whitespace-nowrap text-[clamp(8rem,22vw,22rem)] font-extrabold leading-none tracking-[-0.06em] [-webkit-text-stroke:1.5px_rgba(255,255,255,0.09)] text-transparent">
+                LET&apos;S BUILD
+                <HexOutline size={90} className="mx-10 text-white/10" />
+              </span>
+            ))}
+          </ScrollMarquee>
+        </div>
+        <div data-cta-hex aria-hidden className="absolute right-[6%] top-[10%] -z-10 text-red/50">
+          <HexOutline size={120} />
+        </div>
+        <div data-cta-hex aria-hidden className="absolute bottom-[12%] left-[4%] -z-10 text-white/15">
+          <HexOutline size={70} />
+        </div>
+
+        <div className="wrap relative grid gap-12 py-20 sm:py-28 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <div data-cta-in className="flex items-center gap-4">
+              <Label className="!text-white/60">Contact us</Label>
+              <span className="mono inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-[0.65rem] uppercase tracking-wider text-white/70">
+                <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2bd96b]" /> Replies in one working day
+              </span>
             </div>
-            <div data-r className="font-display tight -mt-[0.06em] text-right text-[clamp(3rem,11.5vw,11rem)] font-extrabold">
-              <span className="serif-i font-normal text-red">idea?</span>
+            <Reveal as="h2" className="font-display tight mt-8 max-w-[14ch] text-[clamp(3rem,8.4vw,8rem)] font-extrabold">
+              Have an idea? Let&apos;s <span className="serif-i text-red">build</span> it.
+            </Reveal>
+            <p data-cta-in className="ar mt-5 text-[clamp(1.3rem,2.6vw,2.1rem)] font-semibold">
+              عندك فكرة؟ خلينا نبنيها.
+            </p>
+
+            <div data-cta-in className="mt-10 flex flex-wrap items-center gap-3">
+              <Button href="/contact" variant="red" cursor="START">
+                Start a project
+              </Button>
+              <a
+                href={site.whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                data-magnet="0.2"
+                className="group inline-flex h-[3.1rem] items-center gap-2.5 rounded-full border border-white/20 px-6 text-[0.74rem] font-bold uppercase tracking-[0.08em] transition-colors hover:border-[#25d366] hover:bg-[#25d366] hover:text-[#04210f]"
+              >
+                <MessageCircle size={16} /> WhatsApp
+              </a>
+              <button
+                type="button"
+                onClick={copy}
+                className="mono inline-flex h-[3.1rem] items-center gap-2.5 rounded-full bg-white/[0.07] px-5 text-[0.78rem] text-white/85 backdrop-blur transition-colors hover:bg-white/15"
+              >
+                {copied ? <Check size={15} className="text-[#2bd96b]" /> : <Copy size={15} />}
+                {copied ? "Copied!" : site.email}
+              </button>
             </div>
           </div>
-          <p className="ar mt-6 text-[clamp(1.5rem,3.4vw,2.8rem)] font-bold">عندك فكرة؟ خلينا نبنيها.</p>
 
-          <TLink
-            href="/contact"
-            data-cursor="START"
-            className="group relative mt-12 grid h-40 w-40 place-items-center rounded-full bg-red text-white shadow-[0_0_80px_rgba(255,36,24,.5)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:scale-110 sm:h-48 sm:w-48"
-          >
-            <span className="font-display text-xl font-extrabold leading-tight tracking-tight">
-              Start a<br />project
-            </span>
-          </TLink>
-          <div className="absolute bottom-8 right-6 hidden text-fg/70 lg:block">
-            <RotatingBadge text="Available for new projects · " size={130}>
-              <span className="pulse-dot h-2.5 w-2.5 rounded-full bg-red" />
-            </RotatingBadge>
+          <div data-cta-in className="hidden lg:block">
+            <TLink href="/contact" data-cursor="TALK" className="block text-white">
+              <RotatingBadge text="Get in touch • Get in touch • " size={190}>
+                <span className="grid h-16 w-16 place-items-center rounded-full bg-red text-white">
+                  <ArrowUpRight size={26} />
+                </span>
+              </RotatingBadge>
+            </TLink>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-/* ───────── FAQ accordion ───────── */
-export function FAQ() {
-  const [open, setOpen] = useState<number | null>(0);
-  return (
-    <section className="py-24 sm:py-32">
-      <div className="wrap grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-        <div>
-          <Label>FAQ · 質問</Label>
-          <Reveal as="h2" className="font-display tight mt-6 text-[clamp(2.6rem,6vw,5.4rem)] font-extrabold">
-            Good <span className="serif-i text-red">questions</span>.
-          </Reveal>
-          <p className="ar mt-4 text-lg text-muted">أسئلة بتتسأل كتير.</p>
-        </div>
-        <div className="border-t border-line">
-          {faqs.map((f, i) => {
-            const isOpen = open === i;
-            const ar = /[\u0600-\u06FF]/.test(f.q);
-            return (
-              <div key={f.q} className="border-b border-line">
-                <button
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-6 py-6 text-left"
-                >
-                  <span className={`font-display text-lg font-bold tracking-tight sm:text-xl ${ar ? "ar" : ""}`}>{f.q}</span>
-                  <span
-                    className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-500 ${
-                      isOpen ? "rotate-45 border-red bg-red text-white" : "border-line"
-                    }`}
-                  >
-                    <Plus size={16} />
-                  </span>
-                </button>
-                <div
-                  className="grid transition-[grid-template-rows] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
-                  style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
-                >
-                  <div className="overflow-hidden">
-                    <p className={`max-w-xl pb-6 text-sm leading-relaxed text-muted ${ar ? "ar text-base" : ""}`}>{f.a}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ───────── Comparison table ───────── */
-const rows: [string, boolean | string, boolean | string, boolean | string][] = [
-  ["Talk directly to the builders", true, true, false],
-  ["Studio-level design & motion", true, "Depends", true],
-  ["Web + mobile + backend in one team", true, false, true],
-  ["Arabic / English with full RTL", true, "Rarely", "Rarely"],
-  ["Weekly clickable builds", true, "Sometimes", "Sometimes"],
-  ["Post-launch support", true, "Ad hoc", true],
-  ["Startup pricing & speed", true, true, false],
-];
-
-function Cell({ v, hero }: { v: boolean | string; hero?: boolean }) {
-  if (v === true) return <span className={`inline-block h-3 w-3 rounded-full ${hero ? "bg-red shadow-[0_0_14px_rgba(255,36,24,.9)]" : "bg-fg/70"}`} aria-label="Yes" />;
-  if (v === false) return <span className="inline-block h-px w-4 bg-muted" aria-label="No" />;
-  return <span className="text-xs text-muted">{v}</span>;
-}
-
-export function Compare() {
-  return (
-    <section className="py-16 sm:py-24">
-      <div className="wrap">
-        <Label>Why Phantoms · 盾</Label>
-        <Reveal as="h2" className="font-display tight mt-6 max-w-3xl text-[clamp(2.4rem,6vw,5.2rem)] font-extrabold">
-          Agency polish. <span className="serif-i text-red">Startup</span> speed.
-        </Reveal>
-        <Fade className="mt-12 overflow-x-auto">
-          <table className="w-full min-w-[40rem] border-collapse text-left">
-            <thead>
-              <tr className="border-b border-line text-xs uppercase tracking-[0.16em]">
-                <th className="py-4 pr-4 font-semibold text-muted" />
-                <th className="rounded-t-2xl bg-red px-5 py-4 text-center font-bold text-white">Phantoms</th>
-                <th className="px-5 py-4 text-center font-semibold text-muted">Freelancer</th>
-                <th className="px-5 py-4 text-center font-semibold text-muted">Big agency</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(([k, a, b, c]) => (
-                <tr key={k} className="border-b border-line">
-                  <td className="py-5 pr-4 text-sm font-medium">{k}</td>
-                  <td className="bg-red/10 px-5 text-center"><Cell v={a} hero /></td>
-                  <td className="px-5 text-center"><Cell v={b} /></td>
-                  <td className="px-5 text-center"><Cell v={c} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Fade>
       </div>
     </section>
   );

@@ -42,17 +42,19 @@ export function OmniStage() {
     <div ref={root} className="relative h-[100svh] overflow-hidden bg-[#050506] text-white">
       <SwarmScene progress={prog} />
       <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_50%,transparent,rgba(0,0,0,.6))]" />
-      <div className="wrap relative flex h-full flex-col justify-between py-28">
+      <div className="wrap relative flex h-full flex-col justify-between pb-10 pt-28">
         <div className="flex items-center justify-between text-[0.65rem] font-bold uppercase tracking-[0.2em] text-white/60">
           <span>Live simulation</span>
           <span>2,200 units</span>
         </div>
-        <div className="text-center">
-          <div className="text-[0.7rem] font-bold uppercase tracking-[0.3em] text-white/50">Formation</div>
-          <span ref={label} className="font-display mt-2 block text-[clamp(2.4rem,7vw,6rem)] font-extrabold tracking-[-0.05em] text-red">
-            SCATTER
-          </span>
-          <p className="mx-auto mt-3 max-w-sm text-sm text-white/55">Keep scrolling — the swarm re-forms with you.</p>
+        <div className="flex items-end justify-between gap-6">
+          <div>
+            <div className="mono text-[0.65rem] font-bold uppercase tracking-[0.3em] text-white/50">Formation</div>
+            <span ref={label} className="font-display mt-2 block text-[clamp(2rem,4.4vw,3.8rem)] font-extrabold leading-none tracking-[-0.05em] text-red">
+              SCATTER
+            </span>
+          </div>
+          <p className="hidden max-w-[16rem] text-right text-sm text-white/55 sm:block">Keep scrolling — the swarm re-forms with you.</p>
         </div>
         <div>
           <div className="h-px w-full bg-white/15">

@@ -19,7 +19,7 @@ export default function ContactPage() {
   ];
   return (
     <>
-      <PageHero label="Contact · 連絡" title={<>Let&apos;s build <span className="serif-i text-red">it</span></>} ar="عندك فكرة؟ خلينا نبنيها." kanji="連" />
+      <PageHero label="Contact" title={<>Let&apos;s build <span className="serif-i text-red">it</span></>} ar="عندك فكرة؟ خلينا نبنيها." />
       <section className="pb-24 sm:pb-32">
         <div className="wrap grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
           <Fade>

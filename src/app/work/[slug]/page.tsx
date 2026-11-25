@@ -5,6 +5,7 @@ import { getProject, projects } from "@/data/projects";
 import { PageHero } from "@/components/sections/PageHero";
 import { CTA } from "@/components/sections/CTA";
 import { Fade, Label, ProjectCover } from "@/components/ui";
+import { HexOutline } from "@/components/ui/Hex";
 import { TLink } from "@/components/layout/PageTransition";
 
 export function generateStaticParams() {
@@ -26,7 +27,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
 
   return (
     <>
-      <PageHero label={`${p.types.join(" · ")} · ${p.year}`} title={p.title} kanji={p.kanji}>
+      <PageHero label={`${p.types.join(" · ")} · ${p.year}`} title={p.title}>
         {p.tagline}
       </PageHero>
 
@@ -115,7 +116,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
                 {next.title}
               </div>
             </div>
-            <span className="jp text-[clamp(3rem,9vw,8rem)] leading-none text-fg/10 transition-colors group-hover:text-red/60">{next.kanji}</span>
+            <HexOutline size={110} className="text-fg/15 transition-all duration-700 group-hover:rotate-[30deg] group-hover:text-red" />
           </TLink>
         </div>
       </section>

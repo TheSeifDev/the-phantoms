@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui";
+import { HexOutline } from "@/components/ui/Hex";
 
 export default function NotFound() {
   return (
     <section className="relative grid min-h-[100svh] place-items-center overflow-hidden px-6 text-center">
-      <span className="jp pointer-events-none absolute select-none text-[min(70vw,40rem)] leading-none text-fg/[0.04]">消</span>
+      <HexOutline size={640} className="pointer-events-none absolute text-fg/[0.06]" />
       <div className="relative">
         <div className="font-display text-[clamp(6rem,22vw,18rem)] font-extrabold leading-[0.85] tracking-[-0.06em]">
           4<span className="text-red">0</span>4

@@ -27,12 +27,13 @@ pnpm build && pnpm start
 
 | Route | What |
 | --- | --- |
-| `/` | Preloader → Hero → Marquee → About → Flagship (pinned RAFIQ → OMNI) → Services → Work → Process → Team → Memories → CTA |
+| `/` | Hex preloader → Hero (floating draggable cards + three.js hex prisms) → About bento → Flagship (RAFIQ 3D cloud / OMNI swarm) → Services (sticky stacking cards) → Work (horizontal pinned scroll) → Process → Team (3D glass carousel) → Memories (scroll-velocity rows) → CTA → bento footer |
 | `/work` | Filterable grid (All / Web / App / SaaS) |
 | `/work/[slug]` | Case-study template (statically generated from `src/data/projects.ts`) |
 | `/flagship/rafiq` · `/flagship/omni` | Flagship pages (RAFIQ: warm and calm; OMNI: dark, scroll-driven swarm) |
 | `/services` | Services, comparison table, process, FAQ |
 | `/team` | Team carousel, squads, memories |
+| `/memories` | Full memories wall (photos from `public/memories/`) |
 | `/contact` | Lead form (+ WhatsApp fallback) |
 | `/api/contact` | Route handler: zod → Neon → optional Resend |
 
@@ -53,14 +54,13 @@ public/team/phantom-03.webp
 `phantom-03 … phantom-08` are **placeholder members** — replace them in `members` (name, role, slug, bio) when you have the real team.
 
 ### Memories (old team)
-Put any photos in `public/memories/` — they become the two rounded-tile marquee rows. Until there are photos, kanji-sigil tiles are shown.
+Put any photos in `public/memories/` — they become the two rounded-tile marquee rows. Until there are photos, neutral placeholder tiles are shown. Click a real photo for the lightbox.
 
-### Japanese glyphs
-Kanji are served from a tiny Noto Serif JP subset. After adding new Japanese text run:
+### Japanese glyph
+Only the footer katakana wordmark remains. If you add Japanese text, run `pnpm jp` to regenerate the font subset.
 
-```bash
-pnpm jp
-```
+### Command palette
+`⌘K` / `Ctrl K` opens a palette to jump between pages and actions.
 
 ## Contact form → Neon
 
@@ -80,5 +80,4 @@ Import the repo on Vercel (framework: Next.js, no config). Set `NEXT_PUBLIC_SITE
 - Phase 2: `/products`, `/courses`, blog.
 
 ## Design notes
-
-Dark ink + phantom red + paper white, taken from the logo. Japanese touches are used as texture, not decoration: kanji section labels (探設築届 process), a red "sun" motif, katakana wordmark, vertical type. Italic Instrument Serif is the single accent voice in headlines. Motion is GSAP-driven and respects `prefers-reduced-motion`.
+Dark ink + phantom red + paper white, taken from the logo. Modern, tech-first: fine grid + glow backdrops, glossy hex prisms (three.js), bento cards with cursor spotlight, magnetic buttons, sticky stacking and horizontal pinned scroll, scroll-velocity marquees. Japanese influence is kept to a single katakana wordmark. Italic Instrument Serif is the accent voice in headlines. Motion is GSAP + Lenis and respects `prefers-reduced-motion`.
