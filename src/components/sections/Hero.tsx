@@ -233,18 +233,14 @@ export function Hero() {
       </Float>
 
       <Float depth={1.6} rot={-2} delay={0.9} className="right-[6%] top-[70%] 2xl:right-[10%]">
-        <div className="flex items-center gap-2.5 rounded-full bg-red py-1.5 pl-1.5 pr-5 text-white shadow-[0_20px_50px_-20px_rgba(255,36,24,.7)]">
-          <HexAvatar name="Ahmed Eid" size={38} tone="light" />
+        <div className="flex items-center gap-2.5 rounded-full bg-red px-5 py-2.5 text-white shadow-[0_20px_50px_-20px_rgba(255,36,24,.7)]">
+          <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70" /><span className="relative inline-flex h-2 w-2 rounded-full bg-white" /></span>
           <div className="leading-tight">
-            <div className="text-[0.8rem] font-extrabold">Ahmed Eid</div>
-            <div className="text-[0.62rem] font-semibold opacity-80">AI Team Leader</div>
+            <div className="text-[0.8rem] font-extrabold">Booking Q1 projects</div>
+            <div className="text-[0.62rem] font-semibold opacity-80">2 slots left · reply in 24h</div>
           </div>
         </div>
-        <span data-wander className="absolute -left-6 -top-8 block">
-          <CursorTag name="Ahmed" color="#111" />
-        </span>
       </Float>
-
       <Float depth={0.5} rot={2} delay={1.5} className="left-[24%] top-[84%] 2xl:left-[28%]">
         <div className={`${glass} flex items-center gap-2 px-3.5 py-2 text-[0.72rem] font-bold`}>
           <Sparkles size={13} className="text-red" /> Web · Apps · SaaS

@@ -1,12 +1,11 @@
 "use client";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 /**
  * Hero background — a glowing hexagonal tunnel. Concentric hex frames stream towards the
  * camera (speed reacts to scroll), twist slightly, pulse in waves and converge on a red light
- * core. A few glossy hex prisms float in front for depth. Pointer steers the camera.
+ * core. Calm: slow, dim, no foreground objects. Pointer steers the camera.
  */
 const hexShape = (r: number, hole: number) => {
   const pts = (k: number) =>
@@ -61,14 +60,8 @@ export default function HeroScene({ className = "" }: { className?: string }) {
     renderer.domElement.style.cssText = "position:absolute;inset:0;width:100%;height:100%;display:block";
 
     const scene = new THREE.Scene();
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
-    scene.environment = envRT.texture;
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 120);
     camera.position.set(0, 0, 6);
-    const key = new THREE.DirectionalLight(0xff3a28, 2.4);
-    key.position.set(4, 5, 6);
-    scene.add(key);
 
     /* ── tunnel ── */
     const RINGS = small ? 12 : 18;
@@ -98,39 +91,13 @@ export default function HeroScene({ className = "" }: { className?: string }) {
     glow.scale.set(34, 34, 1);
     glow.position.z = -LEN + 4;
     scene.add(glow);
-    const beamMat = new THREE.MeshBasicMaterial({ map: glowTexture("beam"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.18 });
+    const beamMat = new THREE.MeshBasicMaterial({ map: glowTexture("beam"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.08 });
     const beam = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 60), beamMat);
     beam.position.z = -LEN + 6;
     scene.add(beam);
 
-    /* ── glossy prisms in front ── */
-    const bodyGeo = new THREE.CylinderGeometry(1, 1, 0.34, 6);
-    const edgeGeo = new THREE.EdgesGeometry(bodyGeo, 20);
-    const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x15151a, metalness: 0.85, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.15, envMapIntensity: 1.1 });
-    const edgeMat = new THREE.LineBasicMaterial({ color: 0xff2a1a, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending });
-    const SPOTS: [number, number, number, number][] = [
-      [-0.78, 0.46, -2.5, 0.8],
-      [0.82, 0.55, -3.5, 0.65],
-      [0.7, -0.5, -1.6, 0.95],
-      [-0.62, -0.62, -2.0, 0.55],
-      [0.2, 0.9, -4, 0.4],
-    ];
-    const prisms: { g: THREE.Group; base: THREE.Vector2; z: number; ph: number }[] = [];
-    SPOTS.slice(0, small ? 3 : SPOTS.length).forEach(([nx, ny, z, s], i) => {
-      const g = new THREE.Group();
-      g.add(new THREE.Mesh(bodyGeo, bodyMat), new THREE.LineSegments(edgeGeo, edgeMat));
-      g.scale.setScalar(s);
-      g.rotation.set(1.0 + i * 0.2, 0.3 * i, 0.4 * i);
-      scene.add(g);
-      prisms.push({ g, base: new THREE.Vector2(nx, ny), z, ph: i * 1.9 });
-    });
-
     let aspect = 1;
     const place = () => {
-      const d = camera.position.z - -3;
-      const h = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * d;
-      const w = h * aspect;
-      prisms.forEach((p) => p.g.position.set(p.base.x * (w / 2), p.base.y * (h / 2), p.z));
     };
     const layout = () => {
       const w = el.clientWidth;
@@ -190,9 +157,9 @@ export default function HeroScene({ className = "" }: { className?: string }) {
       const y = window.scrollY;
       boost += (Math.min(Math.abs(y - lastY) * 0.06, 14) - boost) * 0.08;
       lastY = y;
-      smooth.lerp(mouse, 0.04);
-      const speed = reduce ? 0 : 2.2 + boost;
-      const lm = lightMode ? 0.6 : 0.62;
+      smooth.lerp(mouse, 0.025);
+      const speed = reduce ? 0 : 0.9 + boost * 0.5;
+      const lm = lightMode ? 0.34 : 0.3;
       rings.forEach((r) => {
         r.z += speed * dt;
         if (r.z > 4.6) r.z -= LEN;
@@ -201,23 +168,15 @@ export default function HeroScene({ className = "" }: { className?: string }) {
         const depth = Math.min(1, Math.max(0, (4.6 - r.z) / LEN)); // 0 near → 1 far
         const nearFade = Math.min(1, (4.6 - r.z) / 5);
         const far = Math.pow(1 - depth, 0.8);
-        const wave = 0.55 + 0.45 * Math.sin(t * 1.8 - r.k * 0.7);
+        const wave = 0.55 + 0.45 * Math.sin(t * 0.9 - r.k * 0.5);
         (r.core.material as THREE.MeshBasicMaterial).opacity = (0.1 + 0.9 * wave) * far * nearFade * lm;
         (r.halo.material as THREE.MeshBasicMaterial).opacity = (0.06 + 0.2 * wave) * far * nearFade * lm;
       });
-      glow.material.opacity = (0.8 + Math.sin(t * 1.3) * 0.12) * (lightMode ? 0.55 : 1);
-      prisms.forEach((p, i) => {
-        if (!reduce) {
-          p.g.rotation.x += 0.0035 + i * 0.0006;
-          p.g.rotation.y += 0.006 - i * 0.0007;
-        }
-        p.g.position.y += Math.sin(t * 0.7 + p.ph) * 0.003;
-      });
+      glow.material.opacity = (0.5 + Math.sin(t * 0.8) * 0.06) * (lightMode ? 0.4 : 0.8);
       tunnel.rotation.z = smooth.x * -0.08;
       camera.position.x = smooth.x * 0.7;
       camera.position.y = smooth.y * 0.45;
       camera.lookAt(smooth.x * -0.6, smooth.y * -0.35, -20);
-      edgeMat.opacity = 0.75 + Math.sin(t * 1.6) * 0.2;
       renderer.render(scene, camera);
     };
     loop();
@@ -227,14 +186,12 @@ export default function HeroScene({ className = "" }: { className?: string }) {
       ro.disconnect();
       io.disconnect();
       window.removeEventListener("pointermove", onMove);
-      [coreGeo, haloGeo, bodyGeo, edgeGeo, beam.geometry].forEach((g) => g.dispose());
-      [coreMat, haloMat, bodyMat, edgeMat, glowMat, beamMat].forEach((m) => m.dispose());
+      [coreGeo, haloGeo, beam.geometry].forEach((g) => g.dispose());
+      [coreMat, haloMat, glowMat, beamMat].forEach((m) => m.dispose());
       rings.forEach((r) => {
         (r.core.material as THREE.Material).dispose();
         (r.halo.material as THREE.Material).dispose();
       });
-      envRT.dispose();
-      pmrem.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     };

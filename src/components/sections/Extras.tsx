@@ -1,50 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { Fade, Label, Reveal } from "@/components/ui";
 import { faqs } from "@/data/site";
 
-/* ───────── FAQ accordion ───────── */
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="py-24 sm:py-32">
-      <div className="wrap grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+    <section className="relative overflow-hidden py-[clamp(5rem,10vw,9rem)]">
+      <div aria-hidden className="aura right-[-12rem] top-[-8rem] h-[28rem] w-[28rem] opacity-20" />
+      <div className="wrap relative grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
         <div>
-          <Label>FAQ</Label>
-          <Reveal as="h2" className="font-display tight mt-6 text-[clamp(2.6rem,6vw,5.4rem)] font-extrabold">
-            Good <span className="serif-i text-red">questions</span>.
-          </Reveal>
+          <Label>06 — Questions</Label>
+          <Reveal as="h2" className="font-display tight mt-5 text-[clamp(2.8rem,6vw,5.4rem)] font-extrabold">Good <span className="serif-i glow-red">questions</span>.</Reveal>
           <p className="ar mt-4 text-lg text-muted">أسئلة بتتسأل كتير.</p>
+          <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted">The useful details before we put a date on the calendar.</p>
         </div>
-        <div className="border-t border-line">
+        <div className="glow-card overflow-hidden rounded-[1.8rem] border-line bg-card/60 px-5 sm:px-8">
           {faqs.map((f, i) => {
             const isOpen = open === i;
             const ar = /[\u0600-\u06FF]/.test(f.q);
             return (
-              <div key={f.q} className="border-b border-line">
-                <button
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-6 py-6 text-left"
-                >
-                  <span className={`font-display text-lg font-bold tracking-tight sm:text-xl ${ar ? "ar" : ""}`}>{f.q}</span>
-                  <span
-                    className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-500 ${
-                      isOpen ? "rotate-45 border-red bg-red text-white" : "border-line"
-                    }`}
-                  >
-                    <Plus size={16} />
-                  </span>
+              <div key={f.q} className="border-b border-line last:border-b-0">
+                <button onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen} className="flex w-full items-center justify-between gap-6 py-5 text-left sm:py-6">
+                  <span className={`font-display text-base font-bold tracking-tight sm:text-lg ${ar ? "ar" : ""}`}>{f.q}</span>
+                  <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-500 ${isOpen ? "rotate-45 border-red bg-red text-white shadow-[0_0_22px_rgba(255,36,24,.45)]" : "border-line text-muted"}`}><Plus size={16} /></span>
                 </button>
-                <div
-                  className="grid transition-[grid-template-rows] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
-                  style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
-                >
-                  <div className="overflow-hidden">
-                    <p className={`max-w-xl pb-6 text-sm leading-relaxed text-muted ${ar ? "ar text-base" : ""}`}>{f.a}</p>
-                  </div>
+                <div className="grid transition-[grid-template-rows] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]" style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}>
+                  <div className="overflow-hidden"><p className={`max-w-xl pb-6 text-sm leading-relaxed text-muted ${ar ? "ar text-base" : ""}`}>{f.a}</p></div>
                 </div>
               </div>
             );
@@ -55,7 +39,6 @@ export function FAQ() {
   );
 }
 
-/* ───────── Comparison table ───────── */
 const rows: [string, boolean | string, boolean | string, boolean | string][] = [
   ["Talk directly to the builders", true, true, false],
   ["Studio-level design & motion", true, "Depends", true],
@@ -74,32 +57,15 @@ function Cell({ v, hero }: { v: boolean | string; hero?: boolean }) {
 
 export function Compare() {
   return (
-    <section className="py-16 sm:py-24">
-      <div className="wrap">
-        <Label>Why Phantoms</Label>
-        <Reveal as="h2" className="font-display tight mt-6 max-w-3xl text-[clamp(2.4rem,6vw,5.2rem)] font-extrabold">
-          Agency polish. <span className="serif-i text-red">Startup</span> speed.
-        </Reveal>
-        <Fade className="mt-12 overflow-x-auto">
+    <section className="relative overflow-hidden py-[clamp(4rem,8vw,7rem)]">
+      <div aria-hidden className="aura left-[-16rem] top-16 h-[30rem] w-[30rem] opacity-15" />
+      <div className="wrap relative">
+        <Label>05 — Why Phantoms</Label>
+        <Reveal as="h2" className="font-display tight mt-5 max-w-3xl text-[clamp(2.6rem,6vw,5.2rem)] font-extrabold">Agency polish. <span className="serif-i glow-red">Startup</span> speed.</Reveal>
+        <Fade className="glow-card mt-10 overflow-x-auto rounded-[1.8rem] bg-card/60 p-2 sm:mt-12 sm:p-4">
           <table className="w-full min-w-[40rem] border-collapse text-left">
-            <thead>
-              <tr className="border-b border-line text-xs uppercase tracking-[0.16em]">
-                <th className="py-4 pr-4 font-semibold text-muted" />
-                <th className="rounded-t-2xl bg-red px-5 py-4 text-center font-bold text-white">Phantoms</th>
-                <th className="px-5 py-4 text-center font-semibold text-muted">Freelancer</th>
-                <th className="px-5 py-4 text-center font-semibold text-muted">Big agency</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(([k, a, b, c]) => (
-                <tr key={k} className="border-b border-line">
-                  <td className="py-5 pr-4 text-sm font-medium">{k}</td>
-                  <td className="bg-red/10 px-5 text-center"><Cell v={a} hero /></td>
-                  <td className="px-5 text-center"><Cell v={b} /></td>
-                  <td className="px-5 text-center"><Cell v={c} /></td>
-                </tr>
-              ))}
-            </tbody>
+            <thead><tr className="border-b border-line text-xs uppercase tracking-[0.16em]"><th className="py-4 pl-4 pr-4 font-semibold text-muted" /><th className="rounded-t-2xl bg-red px-5 py-4 text-center font-bold text-white shadow-[0_0_30px_rgba(255,36,24,.2)]">Phantoms</th><th className="px-5 py-4 text-center font-semibold text-muted">Freelancer</th><th className="px-5 py-4 text-center font-semibold text-muted">Big agency</th></tr></thead>
+            <tbody>{rows.map(([k, a, b, c]) => <tr key={k} className="border-b border-line last:border-b-0"><td className="py-5 pl-4 pr-4 text-sm font-medium">{k}</td><td className="bg-red/10 px-5 text-center"><Cell v={a} hero /></td><td className="px-5 text-center"><Cell v={b} /></td><td className="px-5 text-center"><Cell v={c} /></td></tr>)}</tbody>
           </table>
         </Fade>
       </div>

@@ -8,14 +8,15 @@ import { FooterClock, FooterForm } from "@/components/layout/FooterBits";
 const cols = [
   {
     title: "Explore",
-    links: [{ href: "/", label: "Home" }, ...nav],
+    links: [{ href: "/", label: "Home" }, ...nav, { href: "/memories", label: "Memories" }],
   },
   {
-    title: "What we build",
+    title: "Build with us",
     links: [
       { href: "/services", label: "Websites" },
       { href: "/services", label: "Apps" },
       { href: "/services", label: "SaaS" },
+      { href: "/process", label: "How we work" },
       { href: "/flagship/rafiq", label: "RAFIQ" },
       { href: "/flagship/omni", label: "OMNI" },
     ],

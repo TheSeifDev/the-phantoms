@@ -47,11 +47,11 @@ Drop a photo named after the member's `slug` and it is picked up automatically:
 
 ```
 public/team/seif-ayman.webp      (jpg / png also work)
-public/team/ahmed-eid.webp
+
 public/team/phantom-03.webp
 ```
 
-`phantom-03 … phantom-08` are **placeholder members** — replace them in `members` (name, role, slug, bio) when you have the real team.
+`phantom-02 … phantom-35` are **placeholder members** — replace them in `members` (name, role, slug, bio) when you have the real team.
 
 ### Memories (old team)
 Put any photos in `public/memories/` — they become the two rounded-tile marquee rows. Until there are photos, neutral placeholder tiles are shown. Click a real photo for the lightbox.

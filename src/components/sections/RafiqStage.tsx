@@ -1,79 +1,71 @@
 "use client";
+
 import { useRef, useState } from "react";
-import { Activity, Bell, CloudOff, HeartPulse, Mic } from "lucide-react";
-import { gsap, useGSAP, prefersReducedMotion } from "@/lib/gsap";
-import { CloudFace } from "@/components/three/lazy";
-import type { FaceState } from "@/components/three/CloudFace";
+import { Activity, Bell, HeartPulse, Mic, ShieldCheck, WifiOff } from "lucide-react";
+import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { RafiqFace } from "@/components/rafiq";
+import { faceStates, type FaceStateId } from "@/lib/rafiq/content";
 
-const states: { k: FaceState; label: string; line: string; ar: string }[] = [
-  { k: "idle", label: "Idle", line: "Resting, but always around.", ar: "أنا هنا." },
-  { k: "listening", label: "Listening", line: "Eyes wide, taking it all in.", ar: "سامعك." },
-  { k: "thinking", label: "Thinking", line: "Looking for the right memory.", ar: "ثانية أفتكر." },
-  { k: "happy", label: "Happy", line: "Click the cloud — it loves that.", ar: "حبيت الكلام ده!" },
-];
+const glass = "border border-white/75 bg-white/65 shadow-[0_22px_70px_-30px_rgba(27,84,255,.38)] backdrop-blur-2xl";
 
-const card = "rounded-2xl bg-white/85 text-[#0b1020] shadow-[0_20px_50px_-20px_rgba(37,99,235,.45)] backdrop-blur-xl ring-1 ring-white";
-
-/** Big interactive RAFIQ face with the same floating UI cards as the RAFIQ site. */
+/** The RAFIQ light-world demo used by the home teaser and the flagship page. */
 export function RafiqStage() {
   const root = useRef<HTMLDivElement>(null);
-  const [s, setS] = useState<FaceState>("idle");
-  const cur = states.find((x) => x.k === s)!;
+  const [state, setState] = useState<FaceStateId>("listening");
+  const active = faceStates.find((item) => item.id === state) ?? faceStates[0];
 
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      gsap.utils.toArray<HTMLElement>("[data-fl]").forEach((el, i) => {
-        gsap.to(el, { y: i % 2 ? 14 : -14, x: i % 2 ? -6 : 6, duration: 3.4 + i * 0.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
-      });
-    },
-    { scope: root },
-  );
+  useGSAP(() => {
+    if (prefersReducedMotion()) return;
+    const cards = gsap.utils.toArray<HTMLElement>("[data-rafiq-float]");
+    const tweens = cards.map((card, index) => gsap.to(card, {
+      y: index % 2 ? 10 : -10,
+      x: index % 2 ? -5 : 5,
+      duration: 3.8 + index * 0.45,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    }));
+    return () => tweens.forEach((tween) => tween.kill());
+  }, { scope: root });
 
   return (
-    <div ref={root} className="relative mx-auto aspect-[4/4.4] w-full max-w-[34rem] sm:aspect-square">
-      <div aria-hidden className="absolute inset-[8%] rounded-full bg-[#7aa8ff]/35 blur-3xl" />
-      <CloudFace state={s} className="absolute inset-0" />
+    <div ref={root} className="relative mx-auto min-h-[35rem] w-full max-w-[42rem] sm:min-h-[39rem]" aria-label="RAFIQ interactive product preview">
+      <div aria-hidden className="absolute left-1/2 top-1/2 size-[min(34rem,88vw)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#8bb7ff]/25 blur-[80px]" />
+      <div aria-hidden className="absolute bottom-[9%] left-1/2 h-8 w-[54%] -translate-x-1/2 rounded-full bg-[#173c9e]/15 blur-2xl" />
 
-      <div data-fl className={`${card} absolute left-[-2%] top-[14%] max-w-[12rem] rounded-bl-md px-4 py-3`}>
-        <div className="flex items-center gap-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-[#2563eb]">
-          <Mic size={11} /> {cur.label}
-        </div>
-        <p className="ar mt-1 text-sm font-semibold">{cur.ar}</p>
-      </div>
-      <div data-fl className={`${card} absolute right-[-3%] top-[22%] flex items-center gap-2.5 px-3.5 py-3`}>
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#e6eeff] text-[#2563eb]"><Bell size={16} /></span>
-        <div>
-          <div className="text-[0.62rem] font-bold uppercase tracking-wider text-[#0b1020]/50">Reminder</div>
-          <div className="ar text-[0.82rem] font-bold">معاد الدوا · 6:00 م</div>
-        </div>
-      </div>
-      <div data-fl className="absolute bottom-[16%] left-[0%] flex items-center gap-2 rounded-full bg-[#0b1020] px-4 py-2.5 text-[0.7rem] font-bold text-white shadow-2xl">
-        <CloudOff size={13} className="text-[#7aa8ff]" /> Offline mode · on
-      </div>
-      <div data-fl className={`${card} absolute bottom-[10%] right-[0%] px-3.5 py-3`}>
-        <div className="flex items-center gap-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-[#0b1020]/50">
-          <Activity size={11} /> System health
-        </div>
-        <div className="mt-1.5 flex items-center gap-2 text-[0.8rem] font-bold">
-          <HeartPulse size={14} className="text-[#2bd96b]" /> All local · 100%
-        </div>
+      <div data-rafiq-float className={`${glass} absolute left-0 top-[11%] z-20 w-[11.8rem] rounded-[1.35rem] rounded-bl-md p-3.5 sm:left-[2%]`}>
+        <div className="flex items-center gap-2 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#1b54ff]"><Mic size={12} /> {active.label}</div>
+        <p className="ar mt-2 text-[0.9rem] font-semibold leading-relaxed text-[#07102d]">{state === "alert" ? "أنا طالب مساعدة." : state === "happy" ? "حبيت الكلام ده!" : "أنا هنا، سامعك."}</p>
       </div>
 
-      {/* state switcher */}
-      <div className="absolute inset-x-0 -bottom-14 flex flex-wrap justify-center gap-1.5 sm:-bottom-12">
-        {states.map((x) => (
-          <button
-            key={x.k}
-            type="button"
-            onClick={() => setS(x.k)}
-            className={`rounded-full border px-4 py-2 text-[0.7rem] font-bold uppercase tracking-[0.1em] transition-colors ${
-              s === x.k ? "border-[#2563eb] bg-[#2563eb] text-white" : "border-[#0b1020]/15 bg-white/60 text-[#0b1020] hover:border-[#2563eb]"
-            }`}
-          >
-            {x.label}
-          </button>
-        ))}
+      <div data-rafiq-float className={`${glass} absolute right-0 top-[19%] z-20 flex w-[13.7rem] items-center gap-3 rounded-[1.35rem] p-3.5 sm:right-[1%]`}>
+        <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[#e8f0ff] text-[#1b54ff]"><Bell size={17} /></span>
+        <div><div className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#07102d]/45">Reminder</div><div className="ar mt-1 text-[0.78rem] font-bold text-[#07102d]">معاد الدوا · ٦:٠٠ م</div></div>
+      </div>
+
+      <div className="absolute inset-x-[10%] top-[4%] flex justify-between text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[#07102d]/45">
+        <span className="inline-flex items-center gap-2"><span className="size-1.5 rounded-full bg-[#2bd96b]" /> local companion</span>
+        <span>01 / 06</span>
+      </div>
+
+      <RafiqFace state={state} className="absolute inset-[8%] z-10" label={`RAFIQ cloud companion — ${active.label.toLowerCase()}`} />
+
+      <div data-rafiq-float className="absolute bottom-[15%] left-0 z-20 flex items-center gap-2 rounded-full bg-[#07102d] px-4 py-2.5 text-[0.65rem] font-bold text-white shadow-[0_18px_45px_-18px_rgba(7,16,45,.65)] sm:left-[2%]"><WifiOff size={13} className="text-[#8cb8ff]" /> Offline mode · on</div>
+
+      <div data-rafiq-float className={`${glass} absolute bottom-[8%] right-0 z-20 w-[13.4rem] rounded-[1.35rem] p-3.5 sm:right-[1%]`}>
+        <div className="flex items-center gap-2 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#07102d]/45"><Activity size={12} /> Care circle</div>
+        <div className="mt-2 flex items-center gap-2 text-[0.78rem] font-bold text-[#07102d]"><HeartPulse size={15} className="text-[#20b967]" /> مريم updated Mama&apos;s care plan</div>
+      </div>
+
+      <div className="absolute inset-x-0 bottom-[-0.3rem] z-30 rounded-[1.4rem] border border-[#d6e2f8] bg-white/78 p-2 shadow-[0_20px_55px_-32px_rgba(10,52,201,.45)] backdrop-blur-xl sm:bottom-[-0.6rem] sm:p-2.5">
+        <div className="flex items-center gap-2 overflow-x-auto pb-0.5" role="tablist" aria-label="Preview RAFIQ face states">
+          {faceStates.map((item) => (
+            <button key={item.id} type="button" role="tab" aria-selected={item.id === state} onClick={() => setState(item.id)} className={`shrink-0 rounded-full px-3 py-2 text-[0.58rem] font-bold uppercase tracking-[0.12em] transition ${item.id === state ? "bg-[#1b54ff] text-white shadow-[0_9px_22px_-12px_#1b54ff]" : "text-[#07102d]/55 hover:bg-[#e9f0ff] hover:text-[#07102d]"}`}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <div className="mt-2 flex items-center gap-2 px-2 text-[0.66rem] text-[#07102d]/55"><ShieldCheck size={13} className="text-[#1b54ff]" /> {active.body}</div>
       </div>
     </div>
   );

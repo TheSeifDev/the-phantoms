@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
-import { Services } from "@/components/sections/Services";
-import { Process } from "@/components/sections/Process";
-import { CTA } from "@/components/sections/CTA";
+import { ServicesPageContent } from "@/components/sections/ServicesPageContent";
 import { Compare, FAQ } from "@/components/sections/Extras";
+import { CTA } from "@/components/sections/CTA";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -13,12 +12,11 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <>
-      <PageHero label="Services" title={<>What we <span className="serif-i text-red">build</span></>} ar="مواقع، تطبيقات، وأنظمة SaaS.">
-        One team for design, engineering and launch. Pick a lane — or combine them.
+      <PageHero label="Services" title={<>Build the <span className="serif-i text-red">next</span> thing.</>} ar="مواقع، تطبيقات، وأنظمة SaaS.">
+        A focused product team for the moment when a good idea needs a sharp shape, a dependable build and a way to move into the world.
       </PageHero>
-      <Services heading={false} />
+      <ServicesPageContent />
       <Compare />
-      <Process />
       <FAQ />
       <CTA />
     </>

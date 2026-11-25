@@ -33,6 +33,10 @@ export function CommandMenu() {
         run: () => go(n.href),
       })),
     );
+    const more: Item[] = [
+      { id: "process", label: "How we work", hint: "Page", icon: <FileText size={16} />, run: () => go("/process") },
+      { id: "memories", label: "Memories", hint: "Page", icon: <FileText size={16} />, run: () => go("/memories") },
+    ];
     const flag: Item[] = [
       { id: "rafiq", label: "RAFIQ — flagship", hint: "Project", icon: <Sparkles size={16} />, run: () => go("/flagship/rafiq") },
       { id: "omni", label: "OMNI — flagship", hint: "Project", icon: <Sparkles size={16} />, run: () => go("/flagship/omni") },
@@ -47,7 +51,7 @@ export function CommandMenu() {
       { id: "mailto", label: "Send an email", hint: "Action", icon: <Mail size={16} />, run: () => (window.location.href = `mailto:${site.email}`) },
       { id: "theme", label: resolvedTheme === "light" ? "Switch to dark" : "Switch to light", hint: "Theme", icon: <Moon size={16} />, run: () => setTheme(resolvedTheme === "light" ? "dark" : "light") },
     ];
-    return [...nav_, ...flag, ...work, ...actions];
+    return [...nav_, ...more, ...flag, ...work, ...actions];
   }, [go, resolvedTheme, setTheme]);
 
   const list = useMemo(() => {

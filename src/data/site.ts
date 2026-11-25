@@ -16,16 +16,23 @@ export const site = {
 export const nav = [
   { href: "/work", label: "Work" },
   { href: "/services", label: "Services" },
+  { href: "/about", label: "About" },
   { href: "/team", label: "Team" },
-  { href: "/memories", label: "Memories" },
   { href: "/contact", label: "Contact" },
+];
+/** extra pages reachable from footer / command menu */
+export const moreLinks = [
+  { href: "/process", label: "Process" },
+  { href: "/memories", label: "Memories" },
+  { href: "/flagship/rafiq", label: "RAFIQ" },
+  { href: "/flagship/omni", label: "OMNI" },
 ];
 
 export const stats = [
-  { value: 35, suffix: "", label: "Members", note: "Engineers, designers and researchers working in focused squads." },
+  { value: 35, suffix: "", label: "Members", note: "Engineers, designers and researchers working in focused tracks." },
+  { value: 6, suffix: "", label: "Tracks", note: "Web, apps, AI, hardware, design and platform." },
+  { value: 1, suffix: "", label: "Founder", note: "One standard shared across every build." },
   { value: 12, suffix: "+", label: "Projects", note: "From landing pages to AI companions and ops platforms." },
-  { value: 2, suffix: "", label: "Flagships", note: "RAFIQ and OMNI — our graduation-grade products." },
-  { value: 1, suffix: "+", label: "Years", note: "Shipping together since 2025, out of Alexandria." },
 ];
 
 export const marqueeTech = [
