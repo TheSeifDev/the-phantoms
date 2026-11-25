@@ -640,3 +640,139 @@ button.chip:hover,
 }
 /* pulsing dot */
 .glow-dot { background: var(--red); border-radius: 999px; box-shadow: 0 0 12px 2px rgba(255,36,24,.8); }
+
+/* ───────── Flat-surface preference ─────────
+   Keep the homepage and its footer flat while leaving dedicated route styling untouched.
+   Preserve image covers and film grain; use crisp borders and color changes instead.
+   ─────────────────────────────────────────── */
+:is(.home-refined, body:has(.home-refined) footer) [class*="bg-gradient-"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+:is(.home-refined, body:has(.home-refined) footer) [class*="bg-linear-to-"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+:is(.home-refined, body:has(.home-refined) footer) [class*="bg-radial"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+:is(.home-refined, body:has(.home-refined) footer) [class*="bg-conic"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+:is(.home-refined, body:has(.home-refined) footer) [class*="bg-[linear-gradient("]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+:is(.home-refined, body:has(.home-refined) footer) [class*="bg-[radial-gradient("]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+:is(.home-refined, body:has(.home-refined) footer) [class*="bg-[conic-gradient("]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+:is(.home-refined, body:has(.home-refined) footer) [style*="gradient("]:not([style*="url("]) {
+  background-image: none !important;
+}
+
+/* Remove Tailwind box-shadow utilities, including responsive and hover variants. */
+:is(.home-refined, body:has(.home-refined) footer) [class~="shadow"],
+:is(.home-refined, body:has(.home-refined) footer) [class*="shadow-"],
+body:has(.home-refined) header [class~="shadow"],
+body:has(.home-refined) header [class*="shadow-"] {
+  box-shadow: none !important;
+}
+
+:is(.home-refined, body:has(.home-refined) footer) :is(.aura, .blob-glow) {
+  background: none !important;
+  filter: none !important;
+}
+
+:is(.home-refined, body:has(.home-refined) footer) :is(.card, .glow-card) {
+  background: var(--card) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+:is(.home-refined, body:has(.home-refined) footer) :is(.card, .glow-card):hover {
+  border-color: rgba(255, 36, 24, 0.45);
+  box-shadow: none !important;
+}
+
+:is(.home-refined, body:has(.home-refined) footer) :is(.glow-text, .glow-red) {
+  text-shadow: none !important;
+}
+:is(.home-refined, body:has(.home-refined) footer) .glow-line {
+  background: var(--line-strong) !important;
+  box-shadow: none !important;
+}
+:is(.home-refined, body:has(.home-refined) footer) :is(.glow-dot, .pulse-dot),
+.home-refined .label::before,
+body:has(.home-refined) footer .label::before {
+  box-shadow: none !important;
+}
+.home-refined .pulse-dot,
+body:has(.home-refined) footer .pulse-dot {
+  animation: none !important;
+}
+:is(.home-refined, body:has(.home-refined) footer) .footer-wordmark {
+  background: none !important;
+  background-image: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  color: color-mix(in srgb, var(--fg) 25%, transparent) !important;
+  -webkit-text-fill-color: color-mix(in srgb, var(--fg) 25%, transparent) !important;
+}
+:is(.home-refined, body:has(.home-refined) footer) :is(.edge-glow, [data-spot])::before,
+:is(.home-refined, body:has(.home-refined) footer) :is(.edge-glow, [data-spot])::after {
+  display: none !important;
+  content: none !important;
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.home-refined, body:has(.home-refined) footer) [class*="animate-"] {
+    animation: none !important;
+  }
+
+  .home-refined #flagship [data-flagship-stage] {
+    height: auto !important;
+  }
+  .home-refined #flagship [data-flagship-sticky] {
+    position: static !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+  .home-refined #flagship [data-flagship-wrap] {
+    height: auto !important;
+    align-items: flex-start !important;
+  }
+  .home-refined #flagship [data-flagship-desktop] {
+    display: none !important;
+  }
+  .home-refined #flagship [data-flagship-mobile] {
+    display: flex !important;
+  }
+  .home-refined #flagship [data-mobile-product] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .home-refined #process [data-process-stage] {
+    height: auto !important;
+    overflow: visible !important;
+    padding-top: 0 !important;
+  }
+  .home-refined #process [data-process-wrap] {
+    height: auto !important;
+    align-items: flex-start !important;
+  }
+  .home-refined #process [data-process-viewport] {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    cursor: auto !important;
+    scroll-behavior: auto !important;
+  }
+  .home-refined #process [data-process-track] {
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+  .home-refined #process [data-timeline-step],
+  .home-refined #process [data-reveal] {
+    transition: none !important;
+  }
+}
+body:has(.home-refined) [class*="bg-gradient-"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+body:has(.home-refined) [class*="bg-linear-to-"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+body:has(.home-refined) [class*="bg-radial"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+body:has(.home-refined) [class*="bg-conic"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
+body:has(.home-refined) [style*="gradient("]:not([style*="url("]) {
+  background-image: none !important;
+}
+/* Flat-surface overrides are scoped to the homepage, including its shared footer. */
+/* Reduced-motion fallbacks below keep the scroll-led sections directly navigable. */
+/* Other routes retain the existing card, gradient and animation treatments. */

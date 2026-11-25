@@ -40,8 +40,7 @@ function Float({
   );
 }
 
-const glass =
-  "rounded-2xl border border-line bg-surface/80 backdrop-blur-xl shadow-[0_24px_60px_-24px_rgba(0,0,0,.6)]";
+const glass = "rounded-2xl border border-line bg-surface/80 backdrop-blur-xl";
 
 export function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -129,7 +128,6 @@ export function Hero() {
         { opacity: 0, scale: 0.55, y: 60 },
         { opacity: 1, scale: 1, y: 0, duration: 1.2, ease: "back.out(1.5)", stagger: 0.12, delay: 0.7 },
       );
-      gsap.fromTo("[data-glow]", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 2, ease: "power2.out", stagger: 0.2 });
       return () => split?.revert();
     },
     { scope: root, dependencies: [ready] },
@@ -149,11 +147,7 @@ export function Hero() {
     <section ref={root} data-section="Intro" id="top" className="relative isolate overflow-hidden">
       {/* backdrop */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div data-glow className="blob-glow left-1/2 top-[-12%] h-[34rem] w-[60rem] -translate-x-1/2 opacity-0" style={{ background: "radial-gradient(closest-side, rgba(255,36,24,.34), transparent)" }} />
-        <div data-glow className="blob-glow -right-[8%] top-[28%] h-[28rem] w-[28rem] opacity-0" style={{ background: "radial-gradient(closest-side, rgba(255,150,40,.22), transparent)" }} />
-        <div data-glow className="blob-glow -left-[10%] top-[40%] h-[30rem] w-[30rem] opacity-0" style={{ background: "radial-gradient(closest-side, rgba(255,36,24,.16), transparent)" }} />
         <HeroScene />
-        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_42%,var(--bg),transparent_75%)] opacity-90" />
       </div>
 
       {/* floating cards (desktop) */}
@@ -178,13 +172,13 @@ export function Hero() {
             <span className="mono text-fg">82%</span>
           </div>
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-fg/10">
-            <div className="h-full w-[82%] rounded-full bg-gradient-to-r from-[#3b82f6] to-[#7aa8ff]" />
+            <div className="h-full w-[82%] rounded-full bg-[#3b82f6]" />
           </div>
         </div>
       </Float>
 
       <Float depth={1.5} rot={0} delay={1.2} className="left-[7%] top-[63%] 2xl:left-[10%]">
-        <div className="flex items-center gap-2.5 rounded-full bg-fg py-1.5 pl-1.5 pr-5 text-bg shadow-[0_20px_50px_-20px_rgba(0,0,0,.7)]">
+        <div className="flex items-center gap-2.5 rounded-full bg-fg py-1.5 pl-1.5 pr-5 text-bg">
           <HexAvatar name="Seif Ayman" size={38} tone="red" />
           <div className="leading-tight">
             <div className="text-[0.8rem] font-extrabold">Seif Ayman</div>
@@ -220,7 +214,7 @@ export function Hero() {
 
       {/* tilted deploy card – overlaps the headline like the reference */}
       <Float depth={1.15} rot={7} delay={0.3} className="right-[12%] top-[49%] 2xl:right-[17%]">
-        <div className="w-[13.5rem] rounded-2xl bg-red p-4 text-white shadow-[0_30px_70px_-20px_rgba(255,36,24,.65)]">
+        <div className="w-[13.5rem] rounded-2xl bg-red p-4 text-white">
           <div className="flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.14em] opacity-80">
             <Rocket size={13} /> Deploy · production
           </div>
@@ -233,7 +227,7 @@ export function Hero() {
       </Float>
 
       <Float depth={1.6} rot={-2} delay={0.9} className="right-[6%] top-[70%] 2xl:right-[10%]">
-        <div className="flex items-center gap-2.5 rounded-full bg-red px-5 py-2.5 text-white shadow-[0_20px_50px_-20px_rgba(255,36,24,.7)]">
+        <div className="flex items-center gap-2.5 rounded-full bg-red px-5 py-2.5 text-white">
           <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70" /><span className="relative inline-flex h-2 w-2 rounded-full bg-white" /></span>
           <div className="leading-tight">
             <div className="text-[0.8rem] font-extrabold">Booking Q1 projects</div>

@@ -1,0 +1,16 @@
+{
+  "routes": [
+    { "path": "/", "title": "Home" },
+    { "path": "/about", "title": "About" },
+    { "path": "/contact", "title": "Contact" },
+    { "path": "/flagship/omni", "title": "OMNI" },
+    { "path": "/flagship/rafiq", "title": "RAFIQ" },
+    { "path": "/memories", "title": "Memories" },
+    { "path": "/process", "title": "Process" },
+    { "path": "/services", "title": "Services" },
+    { "path": "/team", "title": "Team" },
+    { "path": "/team/:slug", "title": "Team profile" },
+    { "path": "/work", "title": "Work" },
+    { "path": "/work/:slug", "title": "Project" }
+  ]
+}

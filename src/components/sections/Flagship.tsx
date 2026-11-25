@@ -35,18 +35,37 @@ export function Flagship() {
   useGSAP(
     () => {
       const overlay = omniWorld.current;
-      if (!overlay || !stage.current || prefersReducedMotion()) {
+      const scrollStage = stage.current;
+      if (!overlay || !scrollStage) {
         progress.current = 0.82;
         if (overlay) overlay.style.clipPath = "circle(100% at 72% 44%)";
         return;
       }
+
+      const rafiqCopies = scrollStage.querySelectorAll<HTMLElement>('[data-desktop-copy="rafiq"]');
+      const omniCopies = scrollStage.querySelectorAll<HTMLElement>('[data-desktop-copy="omni"]');
 
       const updateWipe = () => {
         const p = gsap.utils.clamp(0, 1, progress.current);
         const eased = p * p * (3 - 2 * p);
         const radius = 5 + eased * 150;
         overlay.style.clipPath = `circle(${radius}% at 72% 43%)`;
+
+        const rafiqOpacity = 1 - gsap.utils.clamp(0, 1, (p - 0.42) / 0.1);
+        const omniOpacity = gsap.utils.clamp(0, 1, (p - 0.64) / 0.1);
+        rafiqCopies.forEach((copy) => {
+          copy.style.opacity = String(rafiqOpacity);
+          copy.style.pointerEvents = rafiqOpacity === 0 ? "none" : "auto";
+        });
+        omniCopies.forEach((copy) => {
+          copy.style.opacity = String(omniOpacity);
+          copy.style.pointerEvents = omniOpacity === 0 ? "none" : "auto";
+        });
       };
+
+      if (prefersReducedMotion()) {
+        return;
+      }
 
       gsap.fromTo(
         "[data-mobile-product]",
@@ -78,7 +97,7 @@ export function Flagship() {
           <div>
             <Label>06 — Featured products</Label>
             <Reveal as="h2" className="font-display tight mt-6 max-w-[10ch] text-[clamp(3rem,7vw,7rem)] font-extrabold">
-              Built to feel <span className="serif-i text-red glow-red">inevitable.</span>
+              Built to feel <span className="serif-i text-red">inevitable.</span>
             </Reveal>
           </div>
           <Fade className="max-w-sm text-[0.92rem] leading-relaxed text-muted">
@@ -87,23 +106,20 @@ export function Flagship() {
         </div>
       </div>
 
-      <div ref={stage} className="relative h-auto md:h-[230svh]">
-        <div className="relative overflow-hidden py-4 md:sticky md:top-0 md:h-[100svh] md:min-h-0 md:max-h-[100svh] md:pt-24 md:pb-4">
-          <div className="wrap flex h-full items-center">
-            <div className="relative hidden h-[min(76svh,47rem)] min-h-[38rem] w-full overflow-hidden rounded-[2.4rem] border border-[#d9e4fb] bg-[#fbfcff] shadow-[0_35px_100px_-55px_rgba(27,84,255,.45)] md:block md:min-h-0">
-              <div className="absolute inset-0 bg-[radial-gradient(55%_75%_at_82%_26%,#e9f0ff_0%,transparent_72%)]" />
-              <div className="absolute -left-24 bottom-[-22%] h-72 w-72 rounded-full bg-[#dce8ff] blur-3xl" />
-
+      <div ref={stage} data-flagship-stage className="relative h-auto md:h-[230svh]">
+        <div data-flagship-sticky className="relative overflow-hidden py-4 md:sticky md:top-0 md:h-[100svh] md:min-h-0 md:max-h-[100svh] md:pt-24 md:pb-4">
+          <div data-flagship-wrap className="wrap flex h-full items-center">
+            <div data-flagship-desktop className="relative hidden h-[min(76svh,47rem)] min-h-[38rem] w-full overflow-hidden rounded-[2.4rem] border border-[#d9e4fb] bg-[#fbfcff] md:block md:min-h-0">
               <div className="relative z-10 flex h-full flex-col justify-between p-5 text-[#0b1230] sm:p-8 lg:p-10">
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-2">
+                  <div data-desktop-copy="rafiq" style={{ opacity: 1 }} className="flex items-center gap-2">
                     <span className="mono rounded-full border border-[#0b1230]/15 bg-white/70 px-3 py-1.5 text-[0.61rem] font-bold uppercase tracking-[0.15em]">01 / 02</span>
                     <span className="rounded-full bg-[#2bd96b]/15 px-3 py-1.5 text-[0.61rem] font-bold text-[#137842]">{products.rafiq.status}</span>
                   </div>
-                  <span className="mono hidden text-[0.62rem] uppercase tracking-[0.16em] text-[#0b1230]/45 sm:block">Featured product / scroll morph</span>
+                  <span data-desktop-copy="rafiq" style={{ opacity: 1 }} className="mono hidden text-[0.62rem] uppercase tracking-[0.16em] text-[#0b1230]/45 sm:block">Featured product / scroll morph</span>
                 </div>
 
-                <div className="max-w-[31rem]">
+                <div data-desktop-copy="rafiq" style={{ opacity: 1 }} className="max-w-[31rem]">
                   <div className="mb-4 flex items-center gap-2 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-[#1b54ff]"><Mic size={13} /> RAFIQ / local intelligence</div>
                   <h3 className="font-display tight text-[clamp(4.4rem,12vw,10rem)] font-extrabold tracking-[-0.08em]">{products.rafiq.name}<span className="text-[#1b54ff]">.</span></h3>
                   <p className="mt-4 max-w-[27rem] text-[clamp(0.95rem,1.6vw,1.18rem)] font-medium leading-relaxed text-[#0b1230]/70">{products.rafiq.pitch}</p>
@@ -118,7 +134,7 @@ export function Flagship() {
                   </div>
                 </div>
 
-                <div className="flex items-end justify-between gap-5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#0b1230]/50">
+                <div data-desktop-copy="rafiq" style={{ opacity: 1 }} className="flex items-end justify-between gap-5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#0b1230]/50">
                   <span className="flex items-center gap-2"><CloudOff size={14} className="text-[#1b54ff]" /> Keeps working when the signal drops</span>
                   <span className="mono">01</span>
                 </div>
@@ -126,18 +142,17 @@ export function Flagship() {
               <CloudFace state={face} className="absolute bottom-[-3%] right-[-7%] z-[2] h-[74%] w-[70%] opacity-95 sm:right-[-2%] sm:w-[59%]" />
 
               <div ref={omniWorld} className="absolute inset-0 z-[3] overflow-hidden bg-[#07070a] text-white" style={{ clipPath: "circle(5% at 72% 43%)" }}>
-                <div className="absolute inset-0 bg-[radial-gradient(70%_80%_at_75%_35%,rgba(255,36,24,.24),transparent_70%)]" />
                 <SwarmScene progress={progress} className="opacity-95" />
                 <div className="relative z-10 flex h-full flex-col justify-between p-5 sm:p-8 lg:p-10">
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-2">
+                    <div data-desktop-copy="omni" style={{ opacity: 0, pointerEvents: "none" }} className="flex items-center gap-2">
                       <span className="mono rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[0.61rem] font-bold uppercase tracking-[0.15em]">02 / 02</span>
                       <span className="rounded-full bg-red/20 px-3 py-1.5 text-[0.61rem] font-bold text-red">{products.omni.status}</span>
                     </div>
-                    <span className="mono hidden text-[0.62rem] uppercase tracking-[0.16em] text-white/45 sm:block">Formation / live simulation</span>
+                    <span data-desktop-copy="omni" style={{ opacity: 0, pointerEvents: "none" }} className="mono hidden text-[0.62rem] uppercase tracking-[0.16em] text-white/45 sm:block">Formation / live simulation</span>
                   </div>
 
-                  <div className="max-w-[31rem]">
+                  <div data-desktop-copy="omni" style={{ opacity: 0, pointerEvents: "none" }} className="max-w-[31rem]">
                     <div className="mb-4 flex items-center gap-2 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-red"><Radio size={13} /> OMNI / collective intelligence</div>
                     <h3 className="font-display tight text-[clamp(4.4rem,12vw,10rem)] font-extrabold tracking-[-0.08em]">{products.omni.name}<span className="text-red">.</span></h3>
                     <p className="mt-4 max-w-[27rem] text-[clamp(0.95rem,1.6vw,1.18rem)] font-medium leading-relaxed text-white/65">{products.omni.pitch}</p>
@@ -152,7 +167,7 @@ export function Flagship() {
                     </div>
                   </div>
 
-                  <div className="flex items-end justify-between gap-5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white/45">
+                  <div data-desktop-copy="omni" style={{ opacity: 0, pointerEvents: "none" }} className="flex items-end justify-between gap-5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white/45">
                     <span>Scroll to re-form the swarm</span>
                     <span className="mono text-red">02</span>
                   </div>
@@ -160,9 +175,8 @@ export function Flagship() {
               </div>
             </div>
 
-            <div className="flex w-full flex-col gap-4 md:hidden">
-              <article data-mobile-product className="relative min-h-[38rem] overflow-hidden rounded-[2.2rem] border border-[#d9e4fb] bg-[#fbfcff] p-5 text-[#0b1230] shadow-[0_28px_75px_-48px_rgba(27,84,255,.5)] sm:p-7">
-                <div className="absolute inset-0 bg-[radial-gradient(65%_60%_at_80%_22%,#e9f0ff_0%,transparent_72%)]" />
+            <div data-flagship-mobile className="flex w-full flex-col gap-4 md:hidden">
+              <article data-mobile-product className="relative min-h-[38rem] overflow-hidden rounded-[2.2rem] border border-[#d9e4fb] bg-[#fbfcff] p-5 text-[#0b1230] sm:p-7">
                 <CloudFace state={face} className="absolute bottom-[-2%] right-[-12%] h-[58%] w-[76%] opacity-95" />
                 <div className="relative z-10 flex min-h-[36rem] flex-col justify-between">
                   <div className="flex items-center justify-between gap-3"><span className="mono rounded-full border border-[#0b1230]/15 bg-white/70 px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-[0.15em]">01 / 02</span><span className="rounded-full bg-[#2bd96b]/15 px-3 py-1.5 text-[0.6rem] font-bold text-[#137842]">Live prototype</span></div>
@@ -171,8 +185,8 @@ export function Flagship() {
                 </div>
               </article>
 
-              <article data-mobile-product className="relative min-h-[38rem] overflow-hidden rounded-[2.2rem] border border-white/10 bg-[#07070a] p-5 text-white shadow-[0_28px_75px_-48px_rgba(255,36,24,.52)] sm:p-7">
-                <div className="absolute inset-0 bg-[radial-gradient(70%_65%_at_68%_38%,rgba(255,36,24,.25),transparent_70%)]" /><SwarmScene progress={progress} className="opacity-90" />
+              <article data-mobile-product className="relative min-h-[38rem] overflow-hidden rounded-[2.2rem] border border-white/10 bg-[#07070a] p-5 text-white sm:p-7">
+                <SwarmScene progress={progress} className="opacity-90" />
                 <div className="relative z-10 flex min-h-[36rem] flex-col justify-between">
                   <div className="flex items-center justify-between gap-3"><span className="mono rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-[0.15em]">02 / 02</span><span className="rounded-full bg-red/20 px-3 py-1.5 text-[0.6rem] font-bold text-red">In development</span></div>
                   <div><div className="mb-3 flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.15em] text-red"><Radio size={13} /> collective intelligence</div><h3 className="font-display tight text-[clamp(4rem,18vw,6.8rem)] font-extrabold tracking-[-0.08em]">OMNI<span className="text-red">.</span></h3><p className="mt-3 max-w-[18rem] text-sm font-medium leading-relaxed text-white/65">{products.omni.pitch}</p><div className="mt-5 flex flex-wrap gap-1.5">{products.omni.metrics.map((item) => <span key={item} className="rounded-full border border-white/15 bg-white/5 px-2.5 py-1.5 text-[0.57rem] font-bold text-white/85">{item}</span>)}</div><TLink href={products.omni.href} className="group mt-6 inline-flex items-center gap-2 text-sm font-bold underline decoration-red/70 underline-offset-4">Read the case study <ArrowUpRight size={15} className="text-red transition-transform group-hover:rotate-45" /></TLink></div>

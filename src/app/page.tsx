@@ -11,7 +11,7 @@ import { memoryPhotos, teamPhotos } from "@/lib/media";
 
 export default function Home() {
   return (
-    <>
+    <div className="home-refined">
       <Hero />
       <About />
       <Flagship />
@@ -21,6 +21,6 @@ export default function Home() {
       <Team photos={teamPhotos()} />
       <Memories photos={memoryPhotos()} />
       <CTA />
-    </>
+    </div>
   );
 }

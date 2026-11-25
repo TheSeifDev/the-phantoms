@@ -109,6 +109,7 @@ export default function SwarmScene({
     const c = new THREE.Color();
 
     let fit = 1;
+    let renderStatic: (() => void) | null = null;
     const layout = () => {
       const w = el.clientWidth;
       const h = el.clientHeight;
@@ -117,6 +118,7 @@ export default function SwarmScene({
       camera.updateProjectionMatrix();
       fit = Math.min(1, (w / h) / 1.55);
       mesh.scale.setScalar(Math.max(0.55, fit));
+      renderStatic?.();
     };
     layout();
     const ro = new ResizeObserver(layout);
@@ -128,22 +130,22 @@ export default function SwarmScene({
       const r = el.getBoundingClientRect();
       mouse.set(((ev.clientX - r.left) / r.width) * 2 - 1, -(((ev.clientY - r.top) / r.height) * 2 - 1));
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    if (!reduce) window.addEventListener("pointermove", onMove, { passive: true });
     let visible = true;
     const io = new IntersectionObserver(([x]) => (visible = x.isIntersecting));
     io.observe(el);
 
-    const clock = new THREE.Clock();
+    const startedAt = performance.now();
     let raf = 0;
-    const loop = () => {
-      raf = requestAnimationFrame(loop);
-      if (!visible || document.hidden) return;
-      const t = clock.getElapsedTime();
+    const loop = (staticFrame = false) => {
+      if (!staticFrame) raf = requestAnimationFrame(() => loop());
+      if ((!visible || document.hidden) && !staticFrame) return;
+      const t = reduce ? 0 : (performance.now() - startedAt) / 1000;
       const prog = reduce ? 0.9 : progress ? progress.current : (Math.sin(t * 0.22 - 1.2) + 1) / 2;
       const toWave = THREE.MathUtils.smoothstep(prog, 0.05, 0.45);
       const toSphere = THREE.MathUtils.smoothstep(prog, 0.55, 0.95);
       sm.lerp(mouse, 0.06);
-      const pulseR = ((t * 1.1) % 3.2) * 1.15; // ring travelling over the sphere
+      const pulseR = reduce ? -100 : ((t * 1.1) % 3.2) * 1.15; // ring travelling over the sphere
 
       for (let i = 0; i < N; i++) {
         const ix = i * 3;
@@ -151,53 +153,56 @@ export default function SwarmScene({
         let tx = THREE.MathUtils.lerp(scatter[ix], wave[ix], toWave);
         let ty = THREE.MathUtils.lerp(scatter[ix + 1], wave[ix + 1], toWave);
         let tz = THREE.MathUtils.lerp(scatter[ix + 2], wave[ix + 2], toWave);
-        const rip = Math.sin(wave[ix] * 0.8 + t * 1.5) * 0.4 + Math.cos(wave[ix + 2] * 1.0 + t * 1.2) * 0.3;
+        const rip = reduce ? 0 : Math.sin(wave[ix] * 0.8 + t * 1.5) * 0.4 + Math.cos(wave[ix + 2] * 1.0 + t * 1.2) * 0.3;
         ty += rip * toWave * (1 - toSphere);
         tx = THREE.MathUtils.lerp(tx, sphere[ix], toSphere);
         ty = THREE.MathUtils.lerp(ty, sphere[ix + 1], toSphere);
         tz = THREE.MathUtils.lerp(tz, sphere[ix + 2], toSphere);
-        const drift = (1 - toWave) * 0.22;
-        tx += Math.sin(t * 0.6 + i) * drift;
-        ty += Math.cos(t * 0.5 + i * 1.3) * drift;
+        const drift = reduce ? 0 : (1 - toWave) * 0.22;
+        tx += reduce ? 0 : Math.sin(t * 0.6 + i) * drift;
+        ty += reduce ? 0 : Math.cos(t * 0.5 + i * 1.3) * drift;
         const k = 0.075;
-        cur[ix] += (tx - cur[ix]) * k;
-        cur[ix + 1] += (ty - cur[ix + 1]) * k;
-        cur[ix + 2] += (tz - cur[ix + 2]) * k;
+        const blend = reduce ? 1 : k;
+        cur[ix] += (tx - cur[ix]) * blend;
+        cur[ix + 1] += (ty - cur[ix + 1]) * blend;
+        cur[ix + 2] += (tz - cur[ix + 2]) * blend;
         p.set(cur[ix], cur[ix + 1], cur[ix + 2]);
 
         // orientation
         q.copy(qScatter[i]);
-        q2.setFromAxisAngle(zAxis, t * 0.4 + i);
+        q2.setFromAxisAngle(zAxis, reduce ? 0 : t * 0.4 + i);
         q.multiply(q2);
         q.slerp(qWave, toWave);
         q.slerp(qSphere[i], toSphere);
 
-        const s = 0.8 + 0.2 * toWave + 0.12 * toSphere + Math.sin(i * 1.7 + t) * 0.04;
+        const s = 0.8 + 0.2 * toWave + 0.12 * toSphere + (reduce ? 0 : Math.sin(i * 1.7 + t) * 0.04);
         sc.set(s, s, s);
         m.compose(p, q, sc);
         mesh.setMatrixAt(i, m);
 
         // colour: graphite with a red pulse travelling through the formation
         const d = Math.hypot(p.x, p.y, p.z);
-        const pulse = Math.max(0, 1 - Math.abs(d - pulseR) * 1.6) * (0.25 + toSphere * 0.75);
-        const spark = Math.pow(Math.max(0, Math.sin(t * 0.8 + i * 12.9898)), 28) * 0.7;
+        const pulse = reduce ? 0 : Math.max(0, 1 - Math.abs(d - pulseR) * 1.6) * (0.25 + toSphere * 0.75);
+        const spark = reduce ? 0 : Math.pow(Math.max(0, Math.sin(t * 0.8 + i * 12.9898)), 28) * 0.7;
         c.copy(base).lerp(hot, Math.min(1, pulse * 0.9 + spark));
         mesh.setColorAt(i, c);
       }
       mesh.instanceMatrix.needsUpdate = true;
       if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-      mesh.rotation.y = t * 0.1 * (0.3 + toSphere) + sm.x * 0.45;
-      mesh.rotation.x = -sm.y * 0.2 + 0.12;
-      rim.position.x = 4 + Math.sin(t * 0.7) * 1.5;
+      mesh.rotation.y = reduce ? 0 : t * 0.1 * (0.3 + toSphere) + sm.x * 0.45;
+      mesh.rotation.x = reduce ? 0 : -sm.y * 0.2 + 0.12;
+      rim.position.x = reduce ? 4 : 4 + Math.sin(t * 0.7) * 1.5;
       renderer.render(scene, camera);
     };
-    loop();
+    renderStatic = () => loop(true);
+    if (reduce) loop(true);
+    else loop();
 
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
       io.disconnect();
-      window.removeEventListener("pointermove", onMove);
+      if (!reduce) window.removeEventListener("pointermove", onMove);
       geo.dispose();
       mat.dispose();
       mesh.dispose();

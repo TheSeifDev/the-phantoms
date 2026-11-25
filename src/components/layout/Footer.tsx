@@ -30,11 +30,7 @@ export function Footer() {
         <div className="grid gap-3 lg:grid-cols-12">
           {/* Brand card */}
           <div data-spot className="card relative flex min-h-[26rem] flex-col justify-between overflow-hidden p-7 sm:p-9 lg:col-span-6">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full opacity-60 blur-3xl"
-              style={{ background: "radial-gradient(circle, rgba(255,36,24,.32), transparent 65%)" }}
-            />
+            <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full opacity-60 blur-3xl" style={{ background: "radial-gradient(circle, rgba(255,36,24,.32), transparent 65%)" }} />
             <div className="relative flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
                 <Logo size={48} />
@@ -114,14 +110,8 @@ export function Footer() {
         {/* giant wordmark */}
         <div aria-hidden className="relative mt-6 select-none overflow-hidden text-center">
           <div
-            className="font-display font-extrabold leading-[0.8] tracking-[-0.07em]"
-            style={{
-              fontSize: "clamp(3rem,16.4vw,21rem)",
-              background: "linear-gradient(180deg, color-mix(in srgb, var(--fg) 24%, transparent) 0%, transparent 82%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
+            className="footer-wordmark font-display font-extrabold leading-[0.8] tracking-[-0.07em]"
+            style={{ fontSize: "clamp(3rem,16.4vw,21rem)", background: "linear-gradient(180deg, color-mix(in srgb, var(--fg) 24%, transparent) 0%, transparent 82%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}
           >
             PHANTOMS
           </div>
