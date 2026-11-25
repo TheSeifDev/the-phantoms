@@ -17,7 +17,7 @@
   --red-deep: #b30000;
   --paper: #f3f0ea;
   --ink: #0a0a0c;
-  --glass: rgba(255, 255, 255, 0.045);
+  --glass: rgba(255, 255, 255, 0.075);
   --grid: rgba(255, 255, 255, 0.055);
   --card: #101014;
   --inv-bg: #f3f0ea;
@@ -39,7 +39,7 @@
   --line-strong: rgba(10, 10, 12, 0.3);
   --fg: #0a0a0c;
   --muted: #6c6a70;
-  --glass: rgba(10, 10, 12, 0.04);
+  --glass: rgba(255, 255, 255, 0.68);
   --grid: rgba(10, 10, 12, 0.07);
   --card: #ffffff;
 }
@@ -166,8 +166,15 @@ body {
 .glass {
   background: var(--glass);
   border: 1px solid var(--line);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  @apply backdrop-blur-xl;
+}
+:where([class~="bg-surface"], [class~="bg-card"], [class*="bg-surface/"], [class*="bg-card/"]) {
+  background-color: color-mix(in srgb, var(--surface) 72%, transparent);
+  @apply backdrop-blur-xl;
+}
+:where([class*="bg-bg/"]) {
+  @apply backdrop-blur-xl;
 }
 
 /* Grain overlay */
@@ -179,7 +186,7 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.09;
+  opacity: 0.04;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
@@ -496,15 +503,17 @@ button.chip:hover,
   opacity: 1;
 }
 .card {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--card) 92%, #fff 8%), var(--card));
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
   border: 1px solid var(--line);
   border-radius: 1.6rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: border-color 0.5s, box-shadow 0.6s;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  @apply backdrop-blur-xl;
+  transition: background-color 0.35s, border-color 0.4s, box-shadow 0.4s;
 }
 .card:hover {
-  border-color: rgba(255, 36, 24, 0.4);
-  box-shadow: 0 0 36px -8px rgba(255, 36, 24, 0.4), 0 0 80px -24px rgba(255, 36, 24, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  border-color: color-mix(in srgb, var(--red) 42%, var(--line));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 .hex {
   clip-path: polygon(50% 0, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
@@ -543,10 +552,10 @@ button.chip:hover,
 }
 .sec-pad { padding-block: clamp(5rem, 11vw, 10rem); }
 .pill-nav {
-  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  background: color-mix(in srgb, var(--surface) 54%, transparent);
   border: 1px solid var(--line);
-  backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  @apply backdrop-blur-xl;
 }
 @media (prefers-reduced-motion: reduce) {
   .float-y, .caret::after { animation: none !important; }
@@ -564,20 +573,23 @@ button.chip:hover,
   inset: -50%;
   z-index: 95;
   pointer-events: none;
-  opacity: 0.16;
+  opacity: 0.055;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  animation: grainShift 0.9s steps(6) infinite;
+  animation: grainShift 2.4s steps(6) infinite;
 }
-.light .film-grain { opacity: 0.22; mix-blend-mode: multiply; }
+.light .film-grain { opacity: 0.07; mix-blend-mode: multiply; }
 @keyframes grainShift {
   0% { transform: translate(0, 0); }
-  17% { transform: translate(-3%, 2%); }
-  34% { transform: translate(2%, -4%); }
-  51% { transform: translate(-4%, -2%); }
-  68% { transform: translate(3%, 3%); }
-  85% { transform: translate(-2%, 4%); }
+  17% { transform: translate(-1%, 0.75%); }
+  34% { transform: translate(0.75%, -1%); }
+  51% { transform: translate(-1%, -0.5%); }
+  68% { transform: translate(1%, 0.75%); }
+  85% { transform: translate(-0.5%, 1%); }
   100% { transform: translate(0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-grain { animation: none !important; }
 }
 /* section-level static grain (cheap, no animation) */
 .grain-s { position: relative; isolation: isolate; }
@@ -587,7 +599,7 @@ button.chip:hover,
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.1;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.6'/></svg>");
 }
@@ -606,14 +618,16 @@ button.chip:hover,
 .glow-card {
   position: relative;
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
-  box-shadow: 0 0 0 0 rgba(255, 36, 24, 0), inset 0 1px 0 rgba(255,255,255,.07);
-  transition: box-shadow .6s, border-color .6s, transform .6s cubic-bezier(.16,1,.3,1);
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+  @apply backdrop-blur-xl;
+  transition: background-color .35s, border-color .4s, box-shadow .4s, transform .6s cubic-bezier(.16,1,.3,1);
 }
-.light .glow-card { background: #fff; }
+.light .glow-card { background: color-mix(in srgb, var(--surface) 74%, transparent); }
 .glow-card:hover {
-  border-color: rgba(255, 36, 24, 0.55);
-  box-shadow: 0 0 40px -6px rgba(255, 36, 24, 0.45), 0 0 90px -20px rgba(255, 36, 24, 0.5), inset 0 1px 0 rgba(255,255,255,.1);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  border-color: color-mix(in srgb, var(--red) 46%, var(--line));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.13);
 }
 /* rotating conic edge light — add class to any rounded element */
 .edge-glow { position: relative; }
@@ -641,9 +655,9 @@ button.chip:hover,
 /* pulsing dot */
 .glow-dot { background: var(--red); border-radius: 999px; box-shadow: 0 0 12px 2px rgba(255,36,24,.8); }
 
-/* ───────── Flat-surface preference ─────────
-   Keep the homepage and its footer flat while leaving dedicated route styling untouched.
-   Preserve image covers and film grain; use crisp borders and color changes instead.
+/* ───────── Flat-color glass preference ─────────
+   Keep the homepage and its footer gradient-free while using restrained frosted surfaces.
+   Preserve image covers and subtle film grain; favor crisp borders over outer shadows.
    ─────────────────────────────────────────── */
 :is(.home-refined, body:has(.home-refined) footer) [class*="bg-gradient-"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
 :is(.home-refined, body:has(.home-refined) footer) [class*="bg-linear-to-"]:not([class*="bg-[url"]):not([class*="bg-[image:url"]),
@@ -670,14 +684,21 @@ body:has(.home-refined) header [class*="shadow-"] {
 }
 
 :is(.home-refined, body:has(.home-refined) footer) :is(.card, .glow-card) {
-  background: var(--card) !important;
+  background: color-mix(in srgb, var(--surface) 68%, transparent) !important;
   background-image: none !important;
-  box-shadow: none !important;
-  transition: border-color 0.3s, background-color 0.3s;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  @apply backdrop-blur-xl;
+  transition: border-color 0.35s, background-color 0.35s;
 }
 :is(.home-refined, body:has(.home-refined) footer) :is(.card, .glow-card):hover {
   border-color: rgba(255, 36, 24, 0.45);
-  box-shadow: none !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Keep frosted cards readable when their parent deliberately retains a dark, white-text surface. */
+.light .grain-s.text-white :is(.card, .glow-card) {
+  background: color-mix(in srgb, var(--ink) 78%, transparent) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
 }
 
 :is(.home-refined, body:has(.home-refined) footer) :is(.glow-text, .glow-red) {

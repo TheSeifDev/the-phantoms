@@ -9,3 +9,9 @@
 - [x] Remove decorative color gradients and reduce heavy shadows; use restrained flat color, precise borders, and restrained depth.
 - [x] Add purposeful scroll and interaction animations, with reduced-motion support.
 - [x] Verify the changed homepage and responsive routes, then pass TypeScript and production build checks; review and commit/push the intended changes to `origin/main` without force-pushing or touching unrelated routes/pages.
+
+## New iteration — lighter grain and stronger glassmorphism
+- [x] Reduce the animated film-grain overlay and section-level grain across the entire site, including light and dark themes, while keeping only a subtle texture.
+- [x] Strengthen the shared glass treatment across routes using translucent surfaces, useful backdrop blur, and fine borders/highlights; preserve legibility in both themes.
+- [x] Keep the visual update site-wide, avoid heavy shadows and new color gradients, and leave route behavior/content unchanged.
+- [x] Preserve readable contrast and responsive layouts across representative desktop/mobile widths in both themes.
